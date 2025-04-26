@@ -41,10 +41,80 @@
             <p>Esse método consiste basicamente em edição genômica, ou seja, identificação de alguns fragmentos na cadeia de DNA de uma espécie e alteração de um valor possível para outro, como trocar um “A” por um “T” ou um “C” por um “G”.
                 No caso dessa espécie, o DNA de lobos comuns foi alterado com base em um fóssil que estava preservado e somente 14 alterações em 20 genes precisaram ser feitas para que a sequência genética ficasse idêntica ao dos Lobos Terríveis.
             </p>
-            <p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões de DNA desejados, levando em conta sua eficiente analise de padrẽes em strigs grandes, como o DNA.</p>
-            <h2>Funcionamento do algoritmo KMP</h2>
+            <p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
+            <h2>Algoritimo ingenuo</h2>
+            <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise de padrões de strings utilizando o algoritmo ingenuo e como o algoritmo KMP resolve o principal problema dele.</p>
+            <p>Assim como o KMP, o algoritimo ingenuo também é utilizado para procurar padroẽs em strings. Neste caso, o algoritimo ingenuo realiza esta busca utilizando uma método de "brute force", ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
+            <blockquote class="question">
+            <p>Exercício</p>
+            <p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingenuo deve receber para seu funcionemento: <code class="language-c">void algoritimo_ingenuo(???){...}</code>.</p>
+            <details class="answer">
+            <summary>Gabarito</summary>
+            <p>Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as 2 strings e seus tamanhos:</p>
+            <p><code class="language-c">void algoritimo_ingenuo(char string[], char substring[], int n, int m){...}</code></p>
+            </details>
+            </blockquote>
+            <p>Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for(int i = 0; i < n - m; i++){
+        // loop para percorrer a string
+    }
+}
+</code></pre>
+<blockquote class="question">
+        <p>Exercício</p>
+        <p>Completando um pouco mais o código, chegamos dentro do loop de comparação das strings:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for(int i = 0; i < n - m; i++){
+        for (int j = 0; j < m; j++) {
+            //loop de comparação
+        }
+    }
+}
+</code></pre>   
+        <p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele realize as comparações de caractéres das strings.</p>
+        <details class="answer">
+        <summary>Gabarito</summary>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for (int i = 0; i <= n - m; i++) {
+        for (int j = 0; j < m; j++) {
+            if (string[i + j] != substring[j]){
+            }
+        }
+    }
+}
+</code></pre>   
+        </details>
+        </blockquote>
+        <p>Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para que ele nos devolva os indices onde o padrão foi encontrado:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for (int i = 0; i <= n - m; i++) {
+        for (int j = 0; j < m; j++) {
+            if (string[i + j] != substring[j]){
+                break;
+            }
+            if (j == m - 1) {
+                printf("Padrão encontrado na posição %d\n", i);
+            }
+        }
+    }
+}
+</code></pre>
+        <p>Vamos ver uma simples demonstração de como ele funciona por meio da animação:</p>
+        <div class="animation"><img class="frame" src="img/ingenuo/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo/ingenuo03.png" alt="3"><img class="frame" src="img/ingenuo/ingenuo04.png" alt="4"><img class="frame" src="img/ingenuo/ingenuo05.png" alt="5"><img class="frame" src="img/ingenuo/ingenuo06.png" alt="6"><img class="frame" src="img/ingenuo/ingenuo07.png" alt="7"><img class="frame" src="img/ingenuo/ingenuo08.png" alt="8"><img class="frame" src="img/ingenuo/ingenuo09.png" alt="9"><img class="frame" src="img/ingenuo/ingenuo010.png" alt="10"><img class="frame" src="img/ingenuo/ingenuo011.png" alt="11"><img class="frame" src="img/ingenuo/ingenuo012.png" alt="12"><img class="frame" src="img/ingenuo/ingenuo013.png" alt="13"><img class="frame" src="img/ingenuo/ingenuo014.png" alt="14"></div>
+        <p>Agora vamos tentar com uma string e substring maiores:</p>
+        
         </main>
-
+        <footer>
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                <img alt="CC BY-SA 4.0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" title="Creative Commons Attribution-ShareAlike 4.0 International License" />
+            </a>
+            © 2024 Marcelo Hashimoto
+        </footer>
     </div>
 </body>
 

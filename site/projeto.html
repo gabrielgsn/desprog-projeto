@@ -24,30 +24,43 @@
         <main>
             <h1>Algoritimo Knuth-Morris-Pratt </h1>
             <h2>O que é o Algoritimo Knuth-Morris-Pratt</h2>
-            <p>A busca por strings ou padrões em strings é um problema comum em computação, como encontrar uma frase em um documento ou um trecho de DNA em uma sequência genética.
-                O algoritmo Knuth-Morris-Pratt (KMP) resolve esse problema de forma eficiente, encontrando todas as ocorrências de uma substring dentro de uma string maior.
+            <p>A busca por strings ou padrões em strings é um problema comum em computação, como encontrar uma 
+                frase em um documento ou um trecho de DNA em uma sequência genética.
+                O algoritmo Knuth-Morris-Pratt (KMP) resolve esse problema de forma eficiente, encontrando 
+                todas as ocorrências de uma substring dentro de uma string maior.
             </p>
             <p> O KMP é conhecido por sua eficiência em comparação com algoritmos de força bruta, pois evita comparações
                 desnecessárias ao usar informações sobre os padrões já verificados.
             </p>
             <h2>Como isso pode ser aplicado na vida real</h2>
             <p>O algoritmo KMP é amplamente usado para encontrar padrões em textos longos de forma rápida e eficiente. 
-                Um exemplo prático é na bioinformática, onde cientistas buscam sequências específicas de DNA (como genes ou mutações) em cadeias genéticas com milhões de bases.
+                Um exemplo prático é na bioengenharia, onde cientistas buscam sequências específicas de DNA 
+                (como genes ou mutações) em cadeias genéticas com milhões de bases.
             </p>
-            <p>Um exemplo atual disso é a recriação dos lobos terriveis feita pela empresa Colossal Biosciences, que por meio de uma tecnoligia da bioengenharia aprimorada chamada CRISPR conseguiram realizar este feito.
+            <p>Um exemplo atual disso é a recriação dos lobos terriveis feita pela empresa Colossal Biosciences, 
+                que por meio de uma tecnoligia da bioengenharia aprimorada chamada CRISPR conseguiram realizar este feito.
 
          </p>
             <figure class="img"><img src="img/Direwolf.jpeg" alt=""></figure>
-            <p>Esse método consiste basicamente em edição genômica, ou seja, identificação de alguns fragmentos na cadeia de DNA de uma espécie e alteração de um valor possível para outro, como trocar um “A” por um “T” ou um “C” por um “G”.
-                No caso dessa espécie, o DNA de lobos comuns foi alterado com base em um fóssil que estava preservado e somente 14 alterações em 20 genes precisaram ser feitas para que a sequência genética ficasse idêntica ao dos Lobos Terríveis.
+            <p>Esse método consiste basicamente em edição genômica, ou seja, identificação de alguns fragmentos 
+                na cadeia de DNA de uma espécie e alteração de um valor possível para outro, como trocar um “A” 
+                por um “T” ou um “C” por um “G”.
+                No caso dessa espécie, o DNA de lobos comuns foi alterado com base em um fóssil que estava 
+                preservado e somente 14 alterações em 20 genes precisaram ser feitas para que a sequência 
+                genética ficasse idêntica ao dos Lobos Terríveis.
             </p>
-            <p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
+            <p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões 
+                de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
             <h2>Algoritimo ingênuo</h2>
-            <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
-            <p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings. Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de "brute force", ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
+            <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise 
+                de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
+            <p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings. 
+                Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de "brute force", 
+                ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
             <blockquote class="question">
             <p>Exercício</p>
-            <p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve receber para seu funcionemento: <code class="language-c">void algoritimo_ingenuo(???){...}</code>.</p>
+            <p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve 
+                receber para seu funcionemento: <code class="language-c">void algoritimo_ingenuo(???){...}</code>.</p>
             <details class="answer">
             <summary>Gabarito</summary>
             <p>Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as 2 strings e seus tamanhos:</p>
@@ -74,7 +87,8 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
     }
 }
 </code></pre>   
-        <p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as comparações de caractéres das strings enquanto elas estiverem iguais.</p>
+        <p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as 
+            comparações de caractéres das strings enquanto elas estiverem iguais.</p>
         <details class="answer">
         <summary>Gabarito</summary>
 <pre><code class="language-c">
@@ -90,7 +104,8 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 </code></pre>   
         </details>
         </blockquote>
-        <p>Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para que ele nos devolva os indices onde o padrão foi encontrado:</p>
+        <p>Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para 
+            que ele nos devolva os indices onde o padrão foi encontrado:</p>
 <pre><code class="language-c">
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
     for (int i = 0; i <= n - m; i++) {
@@ -117,6 +132,79 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
             </blockquote>
         <p>Agora vamos tentar com uma string e substring maiores:</p>
         <div class="animation"><img class="frame" src="img/ingenuo/ingenuo11.png" alt="1"><img class="frame" src="img/ingenuo/ingenuo12.png" alt="2"><img class="frame" src="img/ingenuo/ingenuo13.png" alt="3"><img class="frame" src="img/ingenuo/ingenuo14.png" alt="4"><img class="frame" src="img/ingenuo/ingenuo15.png" alt="5"><img class="frame" src="img/ingenuo/ingenuo16.png" alt="6"><img class="frame" src="img/ingenuo/ingenuo17.png" alt="7"><img class="frame" src="img/ingenuo/ingenuo18.png" alt="8"><img class="frame" src="img/ingenuo/ingenuo19.png" alt="9"><img class="frame" src="img/ingenuo/ingenuo110.png" alt="10"><img class="frame" src="img/ingenuo/ingenuo111.png" alt="11"><img class="frame" src="img/ingenuo/ingenuo112.png" alt="12"><img class="frame" src="img/ingenuo/ingenuo113.png" alt="13"><img class="frame" src="img/ingenuo/ingenuo114.png" alt="14"><img class="frame" src="img/ingenuo/ingenuo115.png" alt="15"><img class="frame" src="img/ingenuo/ingenuo116.png" alt="16"><img class="frame" src="img/ingenuo/ingenuo117.png" alt="17"><img class="frame" src="img/ingenuo/ingenuo118.png" alt="18"><img class="frame" src="img/ingenuo/ingenuo119.png" alt="19"><img class="frame" src="img/ingenuo/ingenuo120.png" alt="20"><img class="frame" src="img/ingenuo/ingenuo121.png" alt="21"><img class="frame" src="img/ingenuo/ingenuo122.png" alt="22"><img class="frame" src="img/ingenuo/ingenuo123.png" alt="23"><img class="frame" src="img/ingenuo/ingenuo124.png" alt="24"><img class="frame" src="img/ingenuo/ingenuo125.png" alt="25"><img class="frame" src="img/ingenuo/ingenuo126.png" alt="26"><img class="frame" src="img/ingenuo/ingenuo127.png" alt="27"><img class="frame" src="img/ingenuo/ingenuo128.png" alt="28"><img class="frame" src="img/ingenuo/ingenuo129.png" alt="29"><img class="frame" src="img/ingenuo/ingenuo130.png" alt="30"><img class="frame" src="img/ingenuo/ingenuo131.png" alt="31"><img class="frame" src="img/ingenuo/ingenuo132.png" alt="32"><img class="frame" src="img/ingenuo/ingenuo133.png" alt="33"><img class="frame" src="img/ingenuo/ingenuo134.png" alt="34"><img class="frame" src="img/ingenuo/ingenuo135.png" alt="35"><img class="frame" src="img/ingenuo/ingenuo136.png" alt="36"><img class="frame" src="img/ingenuo/ingenuo137.png" alt="37"><img class="frame" src="img/ingenuo/ingenuo138.png" alt="38"></div>
+        <h2> O KMP</h2>
+        <p>Mas como melhorar esse algoritmo ingênuo? A ideia de melhor esse algoritmo (e o nome dele) veio de 3 homens: 
+            Donald Knuth, James Morris e Vaughan Pratt, que buscaram otimizar o desperdício de tempo causado por revisitar 
+            caracteres já lidos. Em alto nível, o que eles pensaram foi:</p>
+        <pre><code class="language-c">
+void kmp(char string[],int n, char substring[], int m){
+    enquanto i for menor que n, continue o processamento {
+        se string[i] for igual a substring[j]{
+            avance contador i e j
+        }
+        se j for igual a m{
+            sabemos que o padrao foi encontrado porque o tamanho maximo da substring foi atingido
+            zere j para continuar a busca
+        }
+        se i for menor que n e string[i] for diferente de substring[j]{
+            se j for igual a 0{
+                avanca i mantendo j em 0
+            }caso contrario,{
+                reinicia j, mas mantem o valor de i para nao perder o progresso
+            }
+        }
+    }
+}
+            </code></pre>
+            <blockquote class="question">
+                <p>Exercício</p>
+                <p>A partir dessa descricao de alto nivel do KMP, tente escrever como seu codigo em C ficaria</p>
+        <pre><code class="language-c">
+        void kmp(char string[], int n, char substring[], int m){
+            ???
+        }
+        </code></pre>   
+                <details class="answer">
+                <summary>Gabarito</summary>
+        <pre><code class="language-c">
+void kmp(char* string, int n, char* substring, int m) {
+    // passo 1: inicialize os indices
+    int i = 0; // indice para o string
+    int j = 0; // indice para a substring
+    
+    // passo 2: inicie um laco na string
+    while (i < n) {
+        // passo 3: compare caracteres
+        if (string[i] == substring[j]) {
+            // passo 4: se coincidem
+            i++;
+            j++;
+        }
+        
+        // passo 5: se o padrao foi encontrado
+        if (j == m) {
+            printf("padrao encontrado na posicao %d\n", i - j);
+            j = 0; // reinicia j para buscar outras ocorrencias
+        }
+        // passo 6: se ha um mismatch
+        else if (i < n && string[i] != substring[j]) {
+            // passo 6a: se j eh zero
+            if (j == 0) {
+                i++; // avanca i, mantendo j em 0
+            }
+            // passo 6b: Se j eh maior que zero
+            else {
+                j = 0; // reinicia j, mas mantem i
+            }
+        }
+    }
+}
+        </code></pre>   
+                </details>
+                </blockquote>
+        <p>Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ainda realiza 
+            comparações redundantes, já que reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode 
+            se aproximar de O(n * m), onde n é o tamanho do texto e m é o tamanho do padrão.</p>
         </main>
         <footer>
             <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">

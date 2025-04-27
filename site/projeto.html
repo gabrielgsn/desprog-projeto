@@ -42,16 +42,16 @@
                 No caso dessa espécie, o DNA de lobos comuns foi alterado com base em um fóssil que estava preservado e somente 14 alterações em 20 genes precisaram ser feitas para que a sequência genética ficasse idêntica ao dos Lobos Terríveis.
             </p>
             <p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
-            <h2>Algoritimo ingenuo</h2>
-            <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise de padrões de strings utilizando o algoritmo ingenuo e como o algoritmo KMP resolve o principal problema dele.</p>
-            <p>Assim como o KMP, o algoritimo ingenuo também é utilizado para procurar padroẽs em strings. Neste caso, o algoritimo ingenuo realiza esta busca utilizando uma método de "brute force", ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
+            <h2>Algoritimo ingênuo</h2>
+            <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
+            <p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings. Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de "brute force", ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
             <blockquote class="question">
             <p>Exercício</p>
-            <p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingenuo deve receber para seu funcionemento: <code class="language-c">void algoritimo_ingenuo(???){...}</code>.</p>
+            <p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve receber para seu funcionemento: <code class="language-c">void algoritimo_ingenuo(???){...}</code>.</p>
             <details class="answer">
             <summary>Gabarito</summary>
             <p>Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as 2 strings e seus tamanhos:</p>
-            <p><code class="language-c">void algoritimo_ingenuo(char string[], char substring[], int n, int m){...}</code></p>
+            <p><code class="language-c">void algoritimo_ingênuo(char string[], char substring[], int n, int m){...}</code></p>
             </details>
             </blockquote>
             <p>Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:</p>
@@ -74,7 +74,7 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
     }
 }
 </code></pre>   
-        <p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele realize as comparações de caractéres das strings.</p>
+        <p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as comparações de caractéres das strings enquanto elas estiverem iguais.</p>
         <details class="answer">
         <summary>Gabarito</summary>
 <pre><code class="language-c">
@@ -82,6 +82,7 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
     for (int i = 0; i <= n - m; i++) {
         for (int j = 0; j < m; j++) {
             if (string[i + j] != substring[j]){
+                break;
             }
         }
     }
@@ -105,9 +106,17 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 }
 </code></pre>
         <p>Vamos ver uma simples demonstração de como ele funciona por meio da animação:</p>
-        <div class="animation"><img class="frame" src="img/ingenuo/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo/ingenuo03.png" alt="3"><img class="frame" src="img/ingenuo/ingenuo04.png" alt="4"><img class="frame" src="img/ingenuo/ingenuo05.png" alt="5"><img class="frame" src="img/ingenuo/ingenuo06.png" alt="6"><img class="frame" src="img/ingenuo/ingenuo07.png" alt="7"><img class="frame" src="img/ingenuo/ingenuo08.png" alt="8"><img class="frame" src="img/ingenuo/ingenuo09.png" alt="9"><img class="frame" src="img/ingenuo/ingenuo010.png" alt="10"><img class="frame" src="img/ingenuo/ingenuo011.png" alt="11"><img class="frame" src="img/ingenuo/ingenuo012.png" alt="12"><img class="frame" src="img/ingenuo/ingenuo013.png" alt="13"><img class="frame" src="img/ingenuo/ingenuo014.png" alt="14"></div>
+        <div class="animation"><img class="frame" src="img/ingenuo/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo/ingenuo03.png" alt="3"><img class="frame" src="img/ingenuo/ingenuo04.png" alt="4"><img class="frame" src="img/ingenuo/ingenuo05.png" alt="5"><img class="frame" src="img/ingenuo/ingenuo06.png" alt="6"><img class="frame" src="img/ingenuo/ingenuo07.png" alt="7"><img class="frame" src="img/ingenuo/ingenuo08.png" alt="8"><img class="frame" src="img/ingenuo/ingenuo09.png" alt="9"><img class="frame" src="img/ingenuo/ingenuo010.png" alt="10"><img class="frame" src="img/ingenuo/ingenuo011.png" alt="11"></div>
+        <blockquote class="question">
+            <p>Exercício</p>
+            <p>Agora que estamos familiarizados com o funcionamento deste algoritimo, tente estimar qual vai ser a complexidade dele no seu pior caso.</p>
+            <details class="answer">
+            <summary>Gabarito</summary>
+            <p>Como o algoritmo ingênuo compara cada posição da string principal, e em cada posição tenta casar a substring. Se a string principal tem tamanho <em>n</em> e a substring tem tamanho <em>m</em>, a complexidade no pior caso é \(O(nm) \).</p>
+            </details>
+            </blockquote>
         <p>Agora vamos tentar com uma string e substring maiores:</p>
-        
+        <div class="animation"><img class="frame" src="img/ingenuo/ingenuo11.png" alt="1"><img class="frame" src="img/ingenuo/ingenuo12.png" alt="2"><img class="frame" src="img/ingenuo/ingenuo13.png" alt="3"><img class="frame" src="img/ingenuo/ingenuo14.png" alt="4"><img class="frame" src="img/ingenuo/ingenuo15.png" alt="5"><img class="frame" src="img/ingenuo/ingenuo16.png" alt="6"><img class="frame" src="img/ingenuo/ingenuo17.png" alt="7"><img class="frame" src="img/ingenuo/ingenuo18.png" alt="8"><img class="frame" src="img/ingenuo/ingenuo19.png" alt="9"><img class="frame" src="img/ingenuo/ingenuo110.png" alt="10"><img class="frame" src="img/ingenuo/ingenuo111.png" alt="11"><img class="frame" src="img/ingenuo/ingenuo112.png" alt="12"><img class="frame" src="img/ingenuo/ingenuo113.png" alt="13"><img class="frame" src="img/ingenuo/ingenuo114.png" alt="14"><img class="frame" src="img/ingenuo/ingenuo115.png" alt="15"><img class="frame" src="img/ingenuo/ingenuo116.png" alt="16"><img class="frame" src="img/ingenuo/ingenuo117.png" alt="17"><img class="frame" src="img/ingenuo/ingenuo118.png" alt="18"><img class="frame" src="img/ingenuo/ingenuo119.png" alt="19"><img class="frame" src="img/ingenuo/ingenuo120.png" alt="20"><img class="frame" src="img/ingenuo/ingenuo121.png" alt="21"><img class="frame" src="img/ingenuo/ingenuo122.png" alt="22"><img class="frame" src="img/ingenuo/ingenuo123.png" alt="23"><img class="frame" src="img/ingenuo/ingenuo124.png" alt="24"><img class="frame" src="img/ingenuo/ingenuo125.png" alt="25"><img class="frame" src="img/ingenuo/ingenuo126.png" alt="26"><img class="frame" src="img/ingenuo/ingenuo127.png" alt="27"><img class="frame" src="img/ingenuo/ingenuo128.png" alt="28"><img class="frame" src="img/ingenuo/ingenuo129.png" alt="29"><img class="frame" src="img/ingenuo/ingenuo130.png" alt="30"><img class="frame" src="img/ingenuo/ingenuo131.png" alt="31"><img class="frame" src="img/ingenuo/ingenuo132.png" alt="32"><img class="frame" src="img/ingenuo/ingenuo133.png" alt="33"><img class="frame" src="img/ingenuo/ingenuo134.png" alt="34"><img class="frame" src="img/ingenuo/ingenuo135.png" alt="35"><img class="frame" src="img/ingenuo/ingenuo136.png" alt="36"><img class="frame" src="img/ingenuo/ingenuo137.png" alt="37"><img class="frame" src="img/ingenuo/ingenuo138.png" alt="38"></div>
         </main>
         <footer>
             <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">

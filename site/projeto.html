@@ -205,6 +205,115 @@ void kmp(char* string, int n, char* substring, int m) {
         <p>Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ainda realiza 
             comparações redundantes, já que reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode 
             se aproximar de O(n * m), onde n é o tamanho do texto e m é o tamanho do padrão.</p>
+
+            
+        
+        <h2>Retirando a Redundância: O Vetor de LPS</h2>
+        
+        <p>O vetor Longest Proper Prefix which is also Suffix (LPS) serve é o Coração do algoritimo KMP. A Abordagem que ele adota de indentificar
+            o padrão é, como o nome já sugere, entender até que ponto do comprimento o prefixo é igual ao sufixo de uma string. Essa padronização é 
+            utilizada para direcionar a eficiência do algoritimo que, ao invés de retroceder, agora, só volta até a parte onde ainda não temos padrões.
+            Mas como eu vou entender padrões comparando prefixos com sufixos? É aí que a mágica vem...    
+        </p>
+
+        <blockquote class="question">
+            <p>Checkpoint</p>
+            <p>Suponhas as seguintes sequências de caracteres</p>
+            
+            <p>1.ABCABCABCABC</p>
+            <p>2.ABABACABABACABABA</p>
+            <p>3.ABCABDABCABEABCABDABCABEABCABD</p>
+
+            <p>Qual o Padrão textual presente em cada uma delas?</p>
+
+            <details class="answer">
+            
+            <summary>Gabarito</summary>
+            <p>1.ABC - Note que aqui a sequência é simples, só temos que ver quando o caractere A se repete novamente</p>
+            <p>2.ABABA - Aqui, já vemos um grau de ruptura, com a letra "c" entre alguns padrões</p>
+            <p>3.ABCABDABCABE - Já temos padrões grandes e difíceis de se indentificar visualmente, com grandes quebras claras</p>
+            </details>
+        </blockquote>
+
+        <p>Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue três etapas naturais. Primeiro, reconhecemos pequenas repetições locais, comparando trechos que já vimos com o que estamos lendo agora. Depois, procuramos uma regularidade, tentando identificar se essas repetições seguem um tamanho ou ritmo constante. Por fim, condensamos essas repetições em uma ideia única para economizar esforço, enxergando, por exemplo, "ABC" repetido, em vez de cada letra separada. Esse raciocínio leva naturalmente a buscar partes do início (prefixos) que também aparecem no final (sufixos), pois eles já foram confirmados e podem ser reutilizados.Logo, o LPS sintetiza esse raciocínio em uma lógica intuitiva.
+        </p>
+
+        <pre><code class="language-c">
+void lps(char padrao[], int m, int lps[]){
+                
+    inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
+                
+    defina lps[0] como 0, porque um único caractere não tem prefixo nem sufixo
+            
+    inicie o contador i em 1
+            
+        enquanto i for menor que m, continue o processamento {
+            se padrao[i] for igual a padrao[comprimento] {
+                incremente o comprimento
+                atribua lps[i] como o novo comprimento
+                avance i
+            }
+            caso contrário {
+                se comprimento for diferente de 0 {
+                    atualize o comprimento para o valor de lps[comprimento - 1]
+                    não avance i ainda, pois vamos tentar casar um prefixo menor
+                }
+                se comprimento for igual a 0 {
+                    defina lps[i] como 0
+                    avance i
+                }
+            }
+        }
+    }
+            </code></pre>
+    
+            <blockquote class="question">
+                <p>Exercício</p>
+                <p>A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em C ficaria</p>
+        <pre><code class="language-c">
+        void lps(char padrao[], int m, int lps[]){
+            ???
+        }
+        </code></pre>   
+                <details class="answer">
+                <summary>Gabarito</summary>
+        <pre><code class="language-c">
+void lps(char padrao[], int m, int lps[]){
+    
+    // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
+    int comprimento = 0;
+    lps[0] = 0;
+
+    // Passo 3: Começa a análise do segundo caractere
+    int i = 1;
+
+    // Passo 4: Percorre o padrão até o final
+    while (i < m) {
+
+        // Passo 5: Se os caracteres combinam, atualiza comprimento e LPS
+        
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
+
+        // Passo 6: Se os caracteres não combinam
+        else {
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+}
+        </code></pre>   
+                </details>
+                </blockquote>
+        
+
         </main>
         <footer>
             <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">

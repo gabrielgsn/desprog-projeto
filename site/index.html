@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Algoritimo Knuth-Morris-Pratt</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans+Condensed:ital,wght@0,300;1,300&family=Open+Sans:ital,wght@0,300;0,400;0,700;0,800;1,300;1,400;1,700;1,800&family=Oxygen+Mono&family=Josefin+Sans:ital,wght@0,200;0,600;1,200;1,600&display=swap">
+    <link rel="stylesheet" href="assets/css/reset.css">
+    <link rel="stylesheet" href="assets/css/highlight.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/color.css">
+    <!--<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>-->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+    <script src="assets/js/highlight.js"></script>
+    <script src="assets/js/script.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="">abrir tudo</a>
+            <a href="">fechar tudo</a>
+        </header>
+        <main>
+
+            <h1>Algoritimo Knuth-Morris-Pratt</h1>
+<h2>O que é o Algoritimo Knuth-Morris-Pratt</h2>
+<p>A busca por strings ou padrões em strings é um problema comum em computação, como encontrar uma
+frase em um documento ou um trecho de DNA em uma sequência genética.
+O algoritmo Knuth-Morris-Pratt (KMP) resolve esse problema de forma eficiente, encontrando
+todas as ocorrências de uma substring dentro de uma string maior.</p>
+<p>O KMP é conhecido por sua eficiência em comparação com algoritmos de força bruta, pois evita comparações
+desnecessárias ao usar informações sobre os padrões já verificados.</p>
+<h2>Como isso pode ser aplicado na vida real</h2>
+<p>O algoritmo KMP é amplamente usado para encontrar padrões em textos longos de forma rápida e eficiente.
+Um exemplo prático é na bioengenharia, onde cientistas buscam sequências específicas de DNA
+(como genes ou mutações) em cadeias genéticas com milhões de bases.</p>
+<p>Um exemplo atual disso é a recriação dos lobos terriveis feita pela empresa Colossal Biosciences,
+que por meio de uma tecnoligia da bioengenharia aprimorada chamada CRISPR conseguiram realizar este feito.</p>
+<figure class="img"><img src="img/Direwolf.jpeg" alt=""></figure>
+<p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões
+de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
+<h2>Algoritimo ingênuo</h2>
+<p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise
+de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
+<p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings.
+Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de “brute force”,
+ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
+<blockquote class="question">
+<p>Exercício</p>
+<p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve
+receber para seu funcionemento: <code class="language-void">algoritimo_ingenuo(???){...}</code>.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as 2 strings e seus tamanhos:</p>
+<p><code class="language-void">algoritimo_ingênuo(char string[], char substring[], int n, int m){...}</code></p>
+</details>
+</blockquote>
+<p>Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for(int i = 0; i &lt; n - m; i++){
+        // loop para percorrer a string
+    }
+}
+
+</code></pre>
+<blockquote class="question">
+<p>Exercício</p>
+<p>Completando um pouco mais o código, chegamos dentro do loop de comparação das strings:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for(int i = 0; i &lt; n - m; i++){
+        for (int j = 0; j &lt; m; j++) {
+            //loop de comparação
+        }
+    }
+}
+
+</code></pre>
+<p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as
+comparações de caractéres das strings enquanto elas estiverem iguais.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for (int i = 0; i &lt;= n - m; i++) {
+        for (int j = 0; j &lt; m; j++) {
+            if (string[i + j] != substring[j]){
+                break;
+            }
+        }
+    }
+}
+
+</code></pre>
+</details>
+</blockquote>
+<p>Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para
+que ele nos devolva os indices onde o padrão foi encontrado:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for (int i = 0; i &lt;= n - m; i++) {
+        for (int j = 0; j &lt; m; j++) {
+            if (string[i + j] != substring[j]){
+                break;
+            }
+            if (j == m - 1) {
+                printf("Padrão encontrado na posição %d\n", i);
+            }
+        }
+    }
+}
+
+</code></pre>
+<p>Vamos ver uma simples demonstração de como ele funciona por meio da animação:</p>
+<div class="animation"><img class="frame" src="img/ingenuo_01/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo_01/ingenuo010.png" alt="2"><img class="frame" src="img/ingenuo_01/ingenuo011.png" alt="3"><img class="frame" src="img/ingenuo_01/ingenuo02.png" alt="4"><img class="frame" src="img/ingenuo_01/ingenuo03.png" alt="5"><img class="frame" src="img/ingenuo_01/ingenuo04.png" alt="6"><img class="frame" src="img/ingenuo_01/ingenuo05.png" alt="7"><img class="frame" src="img/ingenuo_01/ingenuo06.png" alt="8"><img class="frame" src="img/ingenuo_01/ingenuo07.png" alt="9"><img class="frame" src="img/ingenuo_01/ingenuo08.png" alt="10"><img class="frame" src="img/ingenuo_01/ingenuo09.png" alt="11"></div>
+<blockquote class="question">
+<p>Exercício</p>
+<p>Agora que estamos familiarizados com o funcionamento deste algoritimo, tente estimar qual vai ser a complexidade dele no seu pior caso.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Como o algoritmo ingênuo compara cada posição da string principal, e em cada posição tenta casar a substring. Se a string principal tem tamanho <em>n</em> e a substring tem tamanho <em>m</em>, a complexidade no pior caso é (O(nm) ).</p>
+</details>
+</blockquote>
+<p>Agora vamos tentar com uma string e substring maiores:</p>
+<div class="animation"><img class="frame" src="img/ingenuo_02/ingenuo11.png" alt="1"><img class="frame" src="img/ingenuo_02/ingenuo110.png" alt="2"><img class="frame" src="img/ingenuo_02/ingenuo111.png" alt="3"><img class="frame" src="img/ingenuo_02/ingenuo112.png" alt="4"><img class="frame" src="img/ingenuo_02/ingenuo113.png" alt="5"><img class="frame" src="img/ingenuo_02/ingenuo114.png" alt="6"><img class="frame" src="img/ingenuo_02/ingenuo115.png" alt="7"><img class="frame" src="img/ingenuo_02/ingenuo116.png" alt="8"><img class="frame" src="img/ingenuo_02/ingenuo117.png" alt="9"><img class="frame" src="img/ingenuo_02/ingenuo118.png" alt="10"><img class="frame" src="img/ingenuo_02/ingenuo119.png" alt="11"><img class="frame" src="img/ingenuo_02/ingenuo120.png" alt="12"><img class="frame" src="img/ingenuo_02/ingenuo121.png" alt="13"><img class="frame" src="img/ingenuo_02/ingenuo122.png" alt="14"><img class="frame" src="img/ingenuo_02/ingenuo123.png" alt="15"><img class="frame" src="img/ingenuo_02/ingenuo124.png" alt="16"><img class="frame" src="img/ingenuo_02/ingenuo125.png" alt="17"><img class="frame" src="img/ingenuo_02/ingenuo126.png" alt="18"><img class="frame" src="img/ingenuo_02/ingenuo127.png" alt="19"><img class="frame" src="img/ingenuo_02/ingenuo128.png" alt="20"><img class="frame" src="img/ingenuo_02/ingenuo129.png" alt="21"><img class="frame" src="img/ingenuo_02/ingenuo13.png" alt="22"><img class="frame" src="img/ingenuo_02/ingenuo130.png" alt="23"><img class="frame" src="img/ingenuo_02/ingenuo131.png" alt="24"><img class="frame" src="img/ingenuo_02/ingenuo132.png" alt="25"><img class="frame" src="img/ingenuo_02/ingenuo133.png" alt="26"><img class="frame" src="img/ingenuo_02/ingenuo134.png" alt="27"><img class="frame" src="img/ingenuo_02/ingenuo135.png" alt="28"><img class="frame" src="img/ingenuo_02/ingenuo136.png" alt="29"><img class="frame" src="img/ingenuo_02/ingenuo137.png" alt="30"><img class="frame" src="img/ingenuo_02/ingenuo138.png" alt="31"><img class="frame" src="img/ingenuo_02/ingenuo14.png" alt="32"><img class="frame" src="img/ingenuo_02/ingenuo15.png" alt="33"><img class="frame" src="img/ingenuo_02/ingenuo16.png" alt="34"><img class="frame" src="img/ingenuo_02/ingenuo17.png" alt="35"><img class="frame" src="img/ingenuo_02/ingenuo18.png" alt="36"><img class="frame" src="img/ingenuo_02/ingenuo19.png" alt="37"></div>
+<h2>O KMP</h2>
+<p>Mas como melhorar esse algoritmo ingênuo? A ideia de melhor esse algoritmo (e o nome dele) veio de 3 homens:
+Donald Knuth, James Morris e Vaughan Pratt, que buscaram otimizar o desperdício de tempo causado por revisitar
+caracteres já lidos. Em alto nível, o que eles pensaram foi:</p>
+<pre><code class="language-c">
+void kmp(char string[],int n, char substring[], int m){
+    enquanto i for menor que n, continue o processamento {
+        se string[i] for igual a substring[j]{
+            avance contador i e j
+        }
+        se j for igual a m{
+            sabemos que o padrao foi encontrado porque o tamanho maximo da substring foi atingido
+            zere j para continuar a busca
+        }
+        se i for menor que n e string[i] for diferente de substring[j]{
+            se j for igual a 0{
+                avanca i mantendo j em 0
+            }caso contrario,{
+                reinicia j, mas mantem o valor de i para nao perder o progresso
+            }
+        }
+    }
+}
+            
+</code></pre>
+<blockquote class="question">
+<p>Exercício</p>
+<p>A partir dessa descricao de alto nivel do KMP, tente escrever como seu codigo em C ficaria</p>
+<pre><code class="language-c">
+        void kmp(char string[], int n, char substring[], int m){
+
+            ...
+            
+        }
+        
+</code></pre>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-c">
+void kmp(char* string, int n, char* substring, int m) {
+    // passo 1: inicialize os indices
+    int i = 0; // indice para o string
+    int j = 0; // indice para a substring
+    
+    // passo 2: inicie um laco na string
+    while (i &lt; n) {
+        // passo 3: compare caracteres
+        if (string[i] == substring[j]) {
+            // passo 4: se coincidem
+            i++;
+            j++;
+        }
+        
+        // passo 5: se o padrao foi encontrado
+        if (j == m) {
+            printf("padrao encontrado na posicao %d\n", i - j);
+            j = 0; // reinicia j para buscar outras ocorrencias
+        }
+        // passo 6: se ha um mismatch
+        else if (i &lt; n &amp;&amp; string[i] != substring[j]) {
+            // passo 6a: se j eh zero
+            if (j == 0) {
+                i++; // avanca i, mantendo j em 0
+            }
+            // passo 6b: Se j eh maior que zero
+            else {
+                j = 0; // reinicia j, mas mantem i
+            }
+        }
+    }
+}
+        
+</code></pre>
+</details>
+</blockquote>
+<p>Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ainda realiza
+comparações redundantes, já que reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode
+se aproximar de O(n * m), onde n é o tamanho do texto e m é o tamanho do padrão.</p>
+<h2>Retirando a Redundância: O Vetor de LPS</h2>
+<p>O vetor Longest Proper Prefix which is also Suffix (LPS) serve é o Coração do algoritimo KMP. A Abordagem que ele adota de indentificar
+o padrão é, como o nome já sugere, entender até que ponto do comprimento o prefixo é igual ao sufixo de uma string. Essa padronização é
+utilizada para direcionar a eficiência do algoritimo que, ao invés de retroceder, agora, só volta até a parte onde ainda não temos padrões.
+Mas como eu vou entender padrões comparando prefixos com sufixos? É aí que a mágica vem…</p>
+<blockquote class="question">
+<p>Exercício</p>
+<p>Suponhas as seguintes sequências de caracteres</p>
+<p>1.ABCABCABCABC</p>
+<p>2.ABABACABABACABABA</p>
+<p>3.ABCABDABCABEABCABDABCABEABCABD</p>
+<p>Qual o Padrão textual presente em cada uma delas?</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>1.ABC - Note que aqui a sequência é simples, só temos que ver quando o caractere A se repete novamente</p>
+<p>2.ABABA - Aqui, já vemos um grau de ruptura, com a letra “c” entre alguns padrões</p>
+<p>3.ABCABDABCABE - Já temos padrões grandes e difíceis de se indentificar visualmente, com grandes quebras claras</p>
+</details>
+</blockquote>
+<p>Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue três etapas naturais. Primeiro, reconhecemos pequenas repetições locais, comparando trechos que já vimos com o que estamos lendo agora. Depois, procuramos uma regularidade, tentando identificar se essas repetições seguem um tamanho ou ritmo constante. Por fim, condensamos essas repetições em uma ideia única para economizar esforço, enxergando, por exemplo, “ABC” repetido, em vez de cada letra separada. Esse raciocínio leva naturalmente a buscar partes do início (prefixos) que também aparecem no final (sufixos), pois eles já foram confirmados e podem ser reutilizados.Logo, o LPS sintetiza esse raciocínio em uma lógica intuitiva.</p>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int lps[]){
+                
+    inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
+                
+    defina lps[0] como 0, porque um único caractere não tem prefixo nem sufixo
+            
+    inicie o contador i em 1
+            
+        enquanto i for menor que m, continue o processamento {
+            se padrao[i] for igual a padrao[comprimento] {
+                incremente o comprimento
+                atribua lps[i] como o novo comprimento
+                avance i
+            }
+            caso contrário {
+                se comprimento for diferente de 0 {
+                    atualize o comprimento para o valor de lps[comprimento - 1]
+                    não avance i ainda, pois vamos tentar casar um prefixo menor
+                }
+                se comprimento for igual a 0 {
+                    defina lps[i] como 0
+                    avance i
+                }
+            }
+        }
+    }
+            
+</code></pre>
+<blockquote class="question">
+<p>Exercício</p>
+<p>A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em C ficaria</p>
+<pre><code class="language-c">
+        void lps(char padrao[], int m, int lps[]){
+            
+            ...
+
+        }
+        
+</code></pre>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int lps[]){
+    
+    // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
+    int comprimento = 0;
+    lps[0] = 0;
+
+    // Passo 3: Começa a análise do segundo caractere
+    int i = 1;
+
+    // Passo 4: Percorre o padrão até o final
+    while (i &lt; m) {
+
+        // Passo 5: Se os caracteres combinam, atualiza comprimento e LPS
+        
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
+
+        // Passo 6: Se os caracteres não combinam
+        else {
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+}
+        
+</code></pre>
+</details>
+</blockquote>
+
+
+        </main>
+        <footer>
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                <img alt="CC BY-SA 4.0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" title="Creative Commons Attribution-ShareAlike 4.0 International License" />
+            </a>
+            © 2024 Marcelo Hashimoto
+        </footer>
+    </div>
+</body>
+
+</html>

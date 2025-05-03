@@ -196,14 +196,16 @@ Agora vamos tentar com uma string e substring maiores:
 
 :ingenuo_02
 
+Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.
+
+Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de \(O(nm)\) no pior caso, tornando-o inviável para strings longas.
+
 ##  O KMP
 
 
-Mas como melhorar esse algoritmo ingênuo? A ideia de melhor esse algoritmo (e o nome dele) veio de 3 homens: 
- Donald Knuth, James Morris e Vaughan Pratt, que buscaram otimizar o desperdício de tempo causado por revisitar 
- caracteres já lidos. Em alto nível, o que eles pensaram foi:
+Como superar as limitações do algoritmo ingênuo? A ideia central do KMP é pré-processar o padrão para criar uma estrutura que permita "pular" comparações redundantes, otimizando a busca pelo padrão ao longo da string .
 
-
+Agora vamos olhar para uma versão de alto nível do código do KMP:
 
 ``` c
 
@@ -239,11 +241,11 @@ A partir dessa descricao de alto nivel do KMP, tente escrever como seu codigo em
 
 ``` c
 
-        void kmp(char string[], int n, char substring[], int m){
+void kmp(char string[], int n, char substring[], int m){
 
-            ...
-            
-        }
+    ...
+    
+}
         
 ```
 
@@ -353,7 +355,7 @@ Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue t
 
 ``` c
 
-void lps(char padrao[], int m, int lps[]){
+void lps(char padrao[], int m, int* lps){
                 
     inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
                 
@@ -393,7 +395,7 @@ A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em
 
 ``` c
 
-        void lps(char padrao[], int m, int lps[]){
+        void lps(char padrao[], int m, int* lps){
             
             ...
 
@@ -441,8 +443,56 @@ void lps(char padrao[], int m, int lps[]){
 }
         
 ```
+:::
+???
+## Otimizando o KMP
 
+Utilizando o LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. Vamos olhar como fica o código do KMP agora:
+
+``` c
+
+void kmp(char string[], char substring[], int n, int m) {
+    int lps[m];
+    lps(substring, m, lps);
+
+    int i = 0; 
+    int j = 0;
+
+    while (i < n) {
+        if (string[i] == substring[j]) {
+            i++;
+            j++;
+        }
+        if (j == m) {
+            printf("Padrão encontrado na posição %d\n", i - j);
+            j = lps[j - 1]; 
+        } else if (i < n && string[i] != substring[j]) {
+            if (j != 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+}
+        
+```
+
+
+??? Exercício
+
+
+A partir do código fornecido, tente estimar a nova complexidade do algoritmo KMP.
+
+
+
+::: Gabarito
+
+Agora que estamos usando o lps, o KMP alcança uma complexidade de \(O(n + m)\). Isso ocorre porque a construção do vetor LPS, que pré-processa o padrão, é realizada em \(O(m)\), e a busca na string principal é feita em \(O(n)\), sem retrocessos desnecessários.
 
 :::
 ???
 
+Vamos olhar agora para uma animação, demonstrando o funcionamento desta versão do KMP:
+
+:KMP

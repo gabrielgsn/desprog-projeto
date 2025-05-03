@@ -132,10 +132,11 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
             </blockquote>
         <p>Agora vamos tentar com uma string e substring maiores:</p>
         <div class="animation"><img class="frame" src="img/ingenuo_02/ingenuo11.png" alt="1"><img class="frame" src="img/ingenuo_02/ingenuo12.png" alt="2"><img class="frame" src="img/ingenuo_02/ingenuo13.png" alt="3"><img class="frame" src="img/ingenuo_02/ingenuo14.png" alt="4"><img class="frame" src="img/ingenuo_02/ingenuo15.png" alt="5"><img class="frame" src="img/ingenuo_02/ingenuo16.png" alt="6"><img class="frame" src="img/ingenuo_02/ingenuo17.png" alt="7"><img class="frame" src="img/ingenuo_02/ingenuo18.png" alt="8"><img class="frame" src="img/ingenuo_02/ingenuo19.png" alt="9"><img class="frame" src="img/ingenuo_02/ingenuo110.png" alt="10"><img class="frame" src="img/ingenuo_02/ingenuo111.png" alt="11"><img class="frame" src="img/ingenuo_02/ingenuo112.png" alt="12"><img class="frame" src="img/ingenuo_02/ingenuo113.png" alt="13"><img class="frame" src="img/ingenuo_02/ingenuo114.png" alt="14"><img class="frame" src="img/ingenuo_02/ingenuo115.png" alt="15"><img class="frame" src="img/ingenuo_02/ingenuo116.png" alt="16"><img class="frame" src="img/ingenuo_02/ingenuo117.png" alt="17"><img class="frame" src="img/ingenuo_02/ingenuo118.png" alt="18"><img class="frame" src="img/ingenuo_02/ingenuo119.png" alt="19"><img class="frame" src="img/ingenuo_02/ingenuo120.png" alt="20"><img class="frame" src="img/ingenuo_02/ingenuo121.png" alt="21"><img class="frame" src="img/ingenuo_02/ingenuo122.png" alt="22"><img class="frame" src="img/ingenuo_02/ingenuo123.png" alt="23"><img class="frame" src="img/ingenuo_02/ingenuo124.png" alt="24"><img class="frame" src="img/ingenuo_02/ingenuo125.png" alt="25"><img class="frame" src="img/ingenuo_02/ingenuo126.png" alt="26"><img class="frame" src="img/ingenuo_02/ingenuo127.png" alt="27"><img class="frame" src="img/ingenuo_02/ingenuo128.png" alt="28"><img class="frame" src="img/ingenuo_02/ingenuo129.png" alt="29"><img class="frame" src="img/ingenuo_02/ingenuo130.png" alt="30"><img class="frame" src="img/ingenuo_02/ingenuo131.png" alt="31"><img class="frame" src="img/ingenuo_02/ingenuo132.png" alt="32"><img class="frame" src="img/ingenuo_02/ingenuo133.png" alt="33"><img class="frame" src="img/ingenuo_02/ingenuo134.png" alt="34"><img class="frame" src="img/ingenuo_02/ingenuo135.png" alt="35"><img class="frame" src="img/ingenuo_02/ingenuo136.png" alt="36"><img class="frame" src="img/ingenuo_02/ingenuo137.png" alt="37"><img class="frame" src="img/ingenuo_02/ingenuo138.png" alt="38"></div>
+        <p>Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.</p> 
+        <p>Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de \(O(nm)\) no pior caso, tornando-o inviável para strings longas.</p>
         <h2> O KMP</h2>
-        <p>Mas como melhorar esse algoritmo ingênuo? A ideia de melhor esse algoritmo (e o nome dele) veio de 3 homens: 
-            Donald Knuth, James Morris e Vaughan Pratt, que buscaram otimizar o desperdício de tempo causado por revisitar 
-            caracteres já lidos. Em alto nível, o que eles pensaram foi:</p>
+        <p>Como superar as limitações do algoritmo ingênuo? A ideia central do KMP é pré-processar o padrão para criar uma estrutura que permita "pular" comparações redundantes, otimizando a busca pelo padrão ao longo da string .</p>
+        <p>Agora vamos olhar para uma versão de alto nível do código do KMP:</p>
         <pre><code class="language-c">
 void kmp(char string[],int n, char substring[], int m){
     enquanto i for menor que n, continue o processamento {
@@ -158,11 +159,11 @@ void kmp(char string[],int n, char substring[], int m){
             </code></pre>
             <blockquote class="question">
                 <p>Exercício</p>
-                <p>A partir dessa descricao de alto nivel do KMP, tente escrever como seu codigo em C ficaria</p>
+                <p>A partir dessa descricao de alto nivel do KMP, tente escrever como o codigo em C dele ficaria</p>
         <pre><code class="language-c">
-        void kmp(char string[], int n, char substring[], int m){
-            ???
-        }
+void kmp(char string[], int n, char substring[], int m){
+    ???
+}
         </code></pre>   
                 <details class="answer">
                 <summary>Gabarito</summary>
@@ -202,9 +203,7 @@ void kmp(char* string, int n, char* substring, int m) {
         </code></pre>   
                 </details>
                 </blockquote>
-        <p>Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ainda realiza 
-            comparações redundantes, já que reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode 
-            se aproximar de O(n * m), onde n é o tamanho do texto e m é o tamanho do padrão.</p>
+        <p>Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ela ainda não resolve totalmente o problema da redundância, já que ela ainda  reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode se aproximar de \(O(nm)\), onde n é o tamanho do texto e m é o tamanho do padrão.</p>
 
             
         
@@ -239,7 +238,7 @@ void kmp(char* string, int n, char* substring, int m) {
         </p>
 
         <pre><code class="language-c">
-void lps(char padrao[], int m, int lps[]){
+void lps(char padrao[], int m, int* lps){
                 
     inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
                 
@@ -278,7 +277,7 @@ void lps(char padrao[], int m, int lps[]){
                 <details class="answer">
                 <summary>Gabarito</summary>
         <pre><code class="language-c">
-void lps(char padrao[], int m, int lps[]){
+void lps(char padrao[], int m, int* lps){
     
     // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
     int comprimento = 0;
@@ -309,17 +308,50 @@ void lps(char padrao[], int m, int lps[]){
         }
     }
 }
-        </code></pre>   
+        </code></pre>
                 </details>
                 </blockquote>
-        
+        <h2>Otimizando o KMP</h2>
+        <p>Utilizando o LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. Vamos olhar como fica o código do KMP agora:</p>
+        <pre><code class="language-c">
+void kmp(char string[], char substring[], int n, int m) {
+    int lps[m];
+    lps(substring, m, lps);
+
+    int i = 0; 
+    int j = 0;
+
+    while (i < n) {
+        if (string[i] == substring[j]) {
+            i++;
+            j++;
+        }
+        if (j == m) {
+            printf("Padrão encontrado na posição %d\n", i - j);
+            j = lps[j - 1]; 
+        } else if (i < n && string[i] != substring[j]) {
+            if (j != 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+}
+        </code></pre>
+        <blockquote class="question">
+            <p>Checkpoint</p>
+            <p>A partir do código fornecido, tente estimar a nova complexidade do algoritmo KMP.</p>
+            <details class="answer">
+            <summary>Gabarito</summary>
+            <p>Agora que estamos usando o lps, o KMP alcança uma complexidade de \(O(n + m)\). Isso ocorre porque a construção do vetor LPS, que pré-processa o padrão, é realizada em \(O(m)\), e a busca na string principal é feita em \(O(n)\), sem retrocessos desnecessários.</p>
+            </details>
+        </blockquote>
+        <p>Vamos olhar agora para uma animação, demonstrando o funcionamento desta versão do KMP:</p>
+        <div class="animation"><img class="frame" src="img/KMP/KMP01.png" alt="1"><img class="frame" src="img/KMP/KMP02.png" alt="2"><img class="frame" src="img/KMP/KMP03.png" alt="3"><img class="frame" src="img/KMP/KMP04.png" alt="4"><img class="frame" src="img/KMP/KMP05.png" alt="5"><img class="frame" src="img/KMP/KMP06.png" alt="6"><img class="frame" src="img/KMP/KMP07.png" alt="7"><img class="frame" src="img/KMP/KMP08.png" alt="8"><img class="frame" src="img/KMP/KMP09.png" alt="9"><img class="frame" src="img/KMP/KMP010.png" alt="10"><img class="frame" src="img/KMP/KMP011.png" alt="11"><img class="frame" src="img/KMP/KMP012.png" alt="12"><img class="frame" src="img/KMP/KMP013.png" alt="13"><img class="frame" src="img/KMP/KMP013-2.png" alt="13-2"><img class="frame" src="img/KMP/KMP014.png" alt="14"><img class="frame" src="img/KMP/KMP015.png" alt="15"><img class="frame" src="img/KMP/KMP016.png" alt="16"><img class="frame" src="img/KMP/KMP017.png" alt="17"><img class="frame" src="img/KMP/KMP018.png" alt="18"><img class="frame" src="img/KMP/KMP019.png" alt="19"><img class="frame" src="img/KMP/KMP020.png" alt="20"><img class="frame" src="img/KMP/KMP021.png" alt="21"><img class="frame" src="img/KMP/KMP022.png" alt="22"><img class="frame" src="img/KMP/KMP023.png" alt="23"><img class="frame" src="img/KMP/KMP024.png" alt="24"><img class="frame" src="img/KMP/KMP025.png" alt="25"><img class="frame" src="img/KMP/KMP026.png" alt="26"><img class="frame" src="img/KMP/KMP027.png" alt="27"><img class="frame" src="img/KMP/KMP028.png" alt="28"></div>
 
         </main>
         <footer>
-            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
-                <img alt="CC BY-SA 4.0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" title="Creative Commons Attribution-ShareAlike 4.0 International License" />
-            </a>
-            © 2024 Marcelo Hashimoto
         </footer>
     </div>
 </body>

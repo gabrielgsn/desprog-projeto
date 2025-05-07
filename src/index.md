@@ -2,51 +2,43 @@
 # Algoritimo Knuth-Morris-Pratt
 
 
-## O que é o Algoritimo Knuth-Morris-Pratt
+## O Problema da Busca por Padrões Textuais 
 
 
-A busca por strings ou padrões em strings é um problema comum em computação, como encontrar uma 
- frase em um documento ou um trecho de DNA em uma sequência genética.
- O algoritmo Knuth-Morris-Pratt (KMP) resolve esse problema de forma eficiente, encontrando 
- todas as ocorrências de uma substring dentro de uma string maior.
- 
+Em um mundo ditado por grandes volumes de dados, a capacidade de encontrar informações em grandes textos de forma rápida e acurada 
+se torna uma habilidade algorítmica cada vez mais necessária, seja para resolver problemas da computação ou para lidar com desafios 
+relacionados à biotecnologia e à segurança da informação.
 
+Esse tipo de abordagem pode abranger desde problemas muito comuns — como contar o número de vezes que determinado termo aparece em 
+um texto — até desafios mais complexos, como encontrar características únicas dentro de uma sequência de DNA.
 
- O KMP é conhecido por sua eficiência em comparação com algoritmos de força bruta, pois evita comparações
- desnecessárias ao usar informações sobre os padrões já verificados.
- 
-
-
-## Como isso pode ser aplicado na vida real
-
-
-O algoritmo KMP é amplamente usado para encontrar padrões em textos longos de forma rápida e eficiente. 
- Um exemplo prático é na bioengenharia, onde cientistas buscam sequências específicas de DNA 
- (como genes ou mutações) em cadeias genéticas com milhões de bases.
- 
-
-
-Um exemplo atual disso é a recriação dos lobos terriveis feita pela empresa Colossal Biosciences, 
- que por meio de uma tecnoligia da bioengenharia aprimorada chamada CRISPR conseguiram realizar este feito.
-
- 
-
+À primeira vista, esse problema pode parecer trivial, especialmente quando pensamos em contextos simples e cotidianos. No entanto, 
+recentemente, a busca por padrões foi aplicada em um feito antes inimaginável: a recriação dos lobos terríveis, realizada pela empresa 
+Colossal Biosciences, por meio de uma tecnologia de bioengenharia avançada chamada CRISPR.
 
 ![](Direwolf.jpeg)
-Esse método consiste basicamente em edição genômica, ou seja, identificação de alguns fragmentos 
- na cadeia de DNA de uma espécie e alteração de um valor possível para outro, como trocar um “A” 
- por um “T” ou um “C” por um “G”.
- No caso dessa espécie, o DNA de lobos comuns foi alterado com base em um fóssil que estava 
- preservado e somente 14 alterações em 20 genes precisaram ser feitas para que a sequência 
- genética ficasse idêntica ao dos Lobos Terríveis.
- 
 
 
-Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões 
- de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.
+O método utilizado consistiu em edição genômica — ou seja, a identificação de fragmentos específicos na cadeia de DNA de uma espécie e 
+a alteração de determinadas bases por outras possíveis, como substituir um “A” por um “T” ou um “C” por um “G”.No caso dos lobos terríveis, 
+o DNA de lobos comuns foi modificado com base em informações obtidas de um fóssil preservado. Com apenas 14 alterações em 20 genes, os 
+cientistas conseguiram reconstruir uma sequência genética idêntica à da espécie extinta.
 
 
-## Algoritimo ingênuo
+
+## Solucionando o problema: Os Algoritimos de Knuth-Morris-Pratt e o algoritimo ingênuo
+
+
+Para encontrar essas sequências específicas no DNA, é necessário utilizar algoritmos de busca por padrões. O mais simples deles é o algoritmo 
+ingênuo, que compara o padrão desejado com cada parte do texto (ou DNA), letra por letra, até encontrar uma correspondência. Já o algoritmo 
+Knuth-Morris-Pratt (KMP) melhora esse processo ao evitar comparações repetidas, usando informações do próprio padrão para avançar mais 
+rapidamente no texto. Enquanto o método ingênuo pode ser lento em casos grandes, o KMP é muito mais eficiente, especialmente quando lidamos 
+com sequências longas e repetitivas — como ocorre em genomas.
+
+Dessa forma, precisamos entender o princípio por trás desses algoritimos para solucionarmos o problema,e, por isso, começaremos com a força
+bruta do algoritimo ingênuo.
+
+## Aprofundando no Algoritimo ingênuo
 
 
 Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise 

@@ -26,23 +26,29 @@
         <main>
 
             <h1>Algoritimo Knuth-Morris-Pratt</h1>
-<h2>O que é o Algoritimo Knuth-Morris-Pratt</h2>
-<p>A busca por strings ou padrões em strings é um problema comum em computação, como encontrar uma
-frase em um documento ou um trecho de DNA em uma sequência genética.
-O algoritmo Knuth-Morris-Pratt (KMP) resolve esse problema de forma eficiente, encontrando
-todas as ocorrências de uma substring dentro de uma string maior.</p>
-<p>O KMP é conhecido por sua eficiência em comparação com algoritmos de força bruta, pois evita comparações
-desnecessárias ao usar informações sobre os padrões já verificados.</p>
-<h2>Como isso pode ser aplicado na vida real</h2>
-<p>O algoritmo KMP é amplamente usado para encontrar padrões em textos longos de forma rápida e eficiente.
-Um exemplo prático é na bioengenharia, onde cientistas buscam sequências específicas de DNA
-(como genes ou mutações) em cadeias genéticas com milhões de bases.</p>
-<p>Um exemplo atual disso é a recriação dos lobos terriveis feita pela empresa Colossal Biosciences,
-que por meio de uma tecnoligia da bioengenharia aprimorada chamada CRISPR conseguiram realizar este feito.</p>
+<h2>O Problema da Busca por Padrões Textuais</h2>
+<p>Em um mundo ditado por grandes volumes de dados, a capacidade de encontrar informações em grandes textos de forma rápida e acurada
+se torna uma habilidade algorítmica cada vez mais necessária, seja para resolver problemas da computação ou para lidar com desafios
+relacionados à biotecnologia e à segurança da informação.</p>
+<p>Esse tipo de abordagem pode abranger desde problemas muito comuns — como contar o número de vezes que determinado termo aparece em
+um texto — até desafios mais complexos, como encontrar características únicas dentro de uma sequência de DNA.</p>
+<p>À primeira vista, esse problema pode parecer trivial, especialmente quando pensamos em contextos simples e cotidianos. No entanto,
+recentemente, a busca por padrões foi aplicada em um feito antes inimaginável: a recriação dos lobos terríveis, realizada pela empresa
+Colossal Biosciences, por meio de uma tecnologia de bioengenharia avançada chamada CRISPR.</p>
 <figure class="img"><img src="img/Direwolf.jpeg" alt=""></figure>
-<p>Neste caso o algoritmo KMP seria uma potencial ferramenta utilizada para encontrar os padrões
-de DNA desejados, levando em conta sua eficiente analise de padrẽes em strings grandes, como o DNA.</p>
-<h2>Algoritimo ingênuo</h2>
+<p>O método utilizado consistiu em edição genômica — ou seja, a identificação de fragmentos específicos na cadeia de DNA de uma espécie e
+a alteração de determinadas bases por outras possíveis, como substituir um “A” por um “T” ou um “C” por um “G”.No caso dos lobos terríveis,
+o DNA de lobos comuns foi modificado com base em informações obtidas de um fóssil preservado. Com apenas 14 alterações em 20 genes, os
+cientistas conseguiram reconstruir uma sequência genética idêntica à da espécie extinta.</p>
+<h2>Solucionando o problema: Os Algoritimos de Knuth-Morris-Pratt e o algoritimo ingênuo</h2>
+<p>Para encontrar essas sequências específicas no DNA, é necessário utilizar algoritmos de busca por padrões. O mais simples deles é o algoritmo
+ingênuo, que compara o padrão desejado com cada parte do texto (ou DNA), letra por letra, até encontrar uma correspondência. Já o algoritmo
+Knuth-Morris-Pratt (KMP) melhora esse processo ao evitar comparações repetidas, usando informações do próprio padrão para avançar mais
+rapidamente no texto. Enquanto o método ingênuo pode ser lento em casos grandes, o KMP é muito mais eficiente, especialmente quando lidamos
+com sequências longas e repetitivas — como ocorre em genomas.</p>
+<p>Dessa forma, precisamos entender o princípio por trás desses algoritimos para solucionarmos o problema,e, por isso, começaremos com a força
+bruta do algoritimo ingênuo.</p>
+<h2>Aprofundando no Algoritimo ingênuo</h2>
 <p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise
 de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
 <p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings.
@@ -130,6 +136,18 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 <p>Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.</p>
 <p>Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de (O(nm)) no pior caso, tornando-o inviável para strings longas.</p>
 <h2>O KMP</h2>
+<p>Bom, já ficou bem claro que o problema do Ingênuo é que ele demora porque sempre precisa ficar voltando quando da mismatch dentro da mesma string. É exatamente nesse ponto em que o KMP entra: como podemos fazer o algoritmo não ficar voltando quando não precisa? (dica: a resposta é bem simples)</p>
+<blockquote class="question">
+<p>Exercicio</p>
+<p>Como podemos fazer o algoritmo não perder progresso?</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Pulando caracteres que ele sabe que estão corretos.</p>
+</details>
+</blockquote>
+<p>Para ficar um pouco mais fácil de visualizar esse defeito:</p>
+<div class="animation"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-01.png" alt="1"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-02.png" alt="2"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-03.png" alt="3"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-04.png" alt="4"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-05.png" alt="5"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-06.png" alt="6"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-07.png" alt="7"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-08.png" alt="8"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-09.png" alt="9"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-10.png" alt="10"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-11.png" alt="11"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-12.png" alt="12"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-13.png" alt="13"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-14.png" alt="14"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-15.png" alt="15"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-16.png" alt="16"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-17.png" alt="17"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-18.png" alt="18"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-19.png" alt="19"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-20.png" alt="20"></div>
+<p>Agora ficou bem claro qual é a primeira etapa do KMP: pular “casas” quando ele sabe que não vai ocorrer match.</p>
 <p>Como superar as limitações do algoritmo ingênuo? A ideia central do KMP é pré-processar o padrão para criar uma estrutura que permita “pular” comparações redundantes, otimizando a busca pelo padrão ao longo da string .</p>
 <p>Agora vamos olhar para uma versão de alto nível do código do KMP:</p>
 <pre><code class="language-c">

@@ -194,6 +194,23 @@ Por exemplo, se uma parte da substring já foi confirmada como compatível, o al
 
 ##  O KMP
 
+Bom, já ficou bem claro que o problema do Ingênuo é que ele demora porque sempre precisa ficar voltando quando da mismatch dentro da mesma string. É exatamente nesse ponto em que o KMP entra: como podemos fazer o algoritmo não ficar voltando quando não precisa? (dica: a resposta é bem simples)
+
+??? Exercicio
+
+Como podemos fazer o algoritmo não perder progresso?
+
+::: Gabarito
+Pulando caracteres que ele sabe que estão corretos.
+:::
+
+???
+
+Para ficar um pouco mais fácil de visualizar esse defeito:
+
+:imgs-kmp-ingenuo-1
+
+Agora ficou bem claro qual é a primeira etapa do KMP: pular "casas" quando ele sabe que não vai ocorrer match.
 
 Como superar as limitações do algoritmo ingênuo? A ideia central do KMP é pré-processar o padrão para criar uma estrutura que permita "pular" comparações redundantes, otimizando a busca pelo padrão ao longo da string .
 

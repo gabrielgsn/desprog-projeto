@@ -68,14 +68,24 @@ Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as
 
 
 Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo.
-Pensando no princípio de funcionamento do algoritmo, temos que ele percorre toda a string principal, já tendo uma sequência desejada (o padrão).
-Se o caractere atual da string não for compatível com o primeiro caractere do padrão, o algoritmo simplesmente avança para a próxima posição, pois já se sabe que não há um padrão começando ali.
-Porém, a partir do momento em que ele encontra uma compatibilidade com o primeiro caractere do padrão, ele passa a comparar também o segundo caractere do padrão com o caractere seguinte da string, e assim sucessivamente.
-Esse processo se repete até que o padrão completo seja verificado ou uma incompatibilidade seja encontrada. Quando o padrão é encontrado, sua posição é registrada, e o algoritmo continua a busca no restante da string.
-
+Pensando no princípio de funcionamento do algoritmo, temos que ele percorre toda a string principal, já tendo uma sequência desejada (o padrão).Se o caractere atual da string não for compatível com o primeiro caractere do padrão, o algoritmo simplesmente avança para a próxima posição, pois já se sabe que não há um padrão começando ali.
 
 
 Em alto nível, essa seria a descrição que se adequaria da melhor forma em algo como: 
+
+``` c
+
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    // para cada i em (0, 1, 2, ..., n - m)
+    //    verifica se a substring ocorre a partir da posição i
+    //    se for igual ao primeiro algoritimo da substring, a sequência inicia
+}
+
+
+```
+
+
+Iniciar com o loop principal é um bom começo, mas não demora muito até percebermos que o código não consegue indentificar onde termina, precisamos de outro índice para isso, verificando a compatibilidade do início ao fim. Assim, precisamos expandir o raciocínio para algo como:
 
 ``` c
 
@@ -92,9 +102,8 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 
 ```
 
-O Comportamento esperado do código, dessa forma, seria algo como: 
+Assim, o comportamento do código é algo como:
 
-Vamos ver uma simples demonstração de como ele funciona por meio da animação:
 
 
 :ingenuo_01
@@ -104,8 +113,7 @@ Vamos ver uma simples demonstração de como ele funciona por meio da animação
 ??? Exercício
 
 
-Bom, você já tem a faca e o queijo na mão para implementar o algoritimo ingênuo, então, agora, implemente o algoritimo ingênuo 
-abaixo.
+Bom, você já tem a faca e o queijo na mão para implementar o algoritimo ingênuo, então mãos à massa!
 
 
 
@@ -148,14 +156,20 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 
 
 
-```
+Olhando só para exemplos mais simples, parece tranquilo,né? Mas, pensemos para casos expandidos (e mais próximos da realidade), com strings superiores 
+a 15 caracteres, e com baixa compatibilidade de sequência, a força bruta performaria rapidamente? 
 
+
+:ingenuo_02
+
+
+Agora, imaginemos para uma sequência de DNA,teríamos um consumo de memória absurdo!
 
 
 ??? Exercício
 
 
-Agora que estamos familiarizados com o funcionamento deste algoritimo, tente estimar qual vai ser a complexidade dele no seu pior caso.
+Para concretizar essa linha de pensamento, pense rapidamente na complexidade desse algoritimo
 
 
 
@@ -169,14 +183,9 @@ Como o algoritmo ingênuo compara cada posição da string principal, e em cada 
 :::
 ???
 
-Olhando só para complexidade, não parece ser tão massante, não é? Bem, até agora, só demos exemplos pequenos, mas para uma string ainda maior, o algoritimo performa algo como:
 
 
-:ingenuo_02
-
-Percebe-se então,um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.
-
-Dessa forma, temos um claro problema de eficiência, mas, e se o nosso código conseguisse "pular" regiões sem padrão da string? É aí que entra o algoritimo KMP.
+Percebe-se então,um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.Dessa forma, temos um claro problema de eficiência, mas, e se o nosso código conseguisse "pular" regiões sem padrão da string? É aí que entra o algoritimo KMP.
 
 ##  O KMP
 

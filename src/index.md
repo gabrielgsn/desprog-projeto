@@ -201,7 +201,7 @@ Bom, já ficou bem claro que o problema do Ingênuo é que ele demora porque sem
 Como podemos fazer o algoritmo não perder progresso?
 
 ::: Gabarito
-Pulando caracteres que ele sabe que estão corretos.
+Pulando caracteres quando ele sabe que eles não vão dar match.
 :::
 
 ???
@@ -210,104 +210,24 @@ Para ficar um pouco mais fácil de visualizar esse defeito:
 
 :imgs-kmp-ingenuo-1
 
-Agora ficou bem claro qual é a primeira etapa do KMP: pular "casas" quando ele sabe que não vai ocorrer match.
+Agora ficou bem claro qual é a primeira etapa do KMP: pular "casas" quando ele sabe que não vai ocorrer match. Mas quais casam são essas?
 
-Como superar as limitações do algoritmo ingênuo? A ideia central do KMP é pré-processar o padrão para criar uma estrutura que permita "pular" comparações redundantes, otimizando a busca pelo padrão ao longo da string .
+De modo simples: ele pula para casas que sabe que ainda podem dar match, ignorando as que já foram testadas e não funcionam. Explicando melhor, o código procura por um *prefixo* na substring que também seja um *sufixo* na string. Isso significa que, ao encontrar um caractere que não combina, o algoritmo pode usar o conhecimento prévio sobre a substring para avançar mais rapidamente.
 
-Agora vamos olhar para uma versão de alto nível do código do KMP:
+Lembrando rapidamente o que são prefixos e sufixos:
 
-``` c
+- Prefixo: uma sequência de caracteres que aparece no início de uma string.
+- Sufixo: uma sequência de caracteres que aparece no final de uma string.
 
-void kmp(char string[],int n, char substring[], int m){
-    enquanto i for menor que n, continue o processamento {
-        se string[i] for igual a substring[j]{
-            avance contador i e j
-        }
-        se j for igual a m{
-            sabemos que o padrao foi encontrado porque o tamanho maximo da substring foi atingido
-            zere j para continuar a busca
-        }
-        se i for menor que n e string[i] for diferente de substring[j]{
-            se j for igual a 0{
-                avanca i mantendo j em 0
-            }caso contrario,{
-                reinicia j, mas mantem o valor de i para nao perder o progresso
-            }
-        }
-    }
-}
-            
-```
+Por exemplo, a palavra "paragrafo" tem como prefixo "para" e como sufixo "grafo". O KMP utiliza essa relação para otimizar a busca, evitando comparações desnecessárias.
 
+Para melhor visualizar isso:
 
+:KMP-1
 
-??? Exercício
+Dessa forma, fica mais claro como o KMP funciona: ele tenta casar a substring com a string, e quando ocorre uma incompatibilidade, ele não volta para o início da substring. Em vez disso, ele utiliza o conhecimento prévio sobre os prefixos e sufixos para avançar mais rapidamente.
 
-
-A partir dessa descricao de alto nivel do KMP, tente escrever como seu codigo em C ficaria
-
-
-
-``` c
-
-void kmp(char string[], int n, char substring[], int m){
-
-    ...
-    
-}
-        
-```
-
-
-
-::: Gabarito
-
-
-``` c
-
-void kmp(char* string, int n, char* substring, int m) {
-    // passo 1: inicialize os indices
-    int i = 0; // indice para o string
-    int j = 0; // indice para a substring
-    
-    // passo 2: inicie um laco na string
-    while (i < n) {
-        // passo 3: compare caracteres
-        if (string[i] == substring[j]) {
-            // passo 4: se coincidem
-            i++;
-            j++;
-        }
-        
-        // passo 5: se o padrao foi encontrado
-        if (j == m) {
-            printf("padrao encontrado na posicao %d\n", i - j);
-            j = 0; // reinicia j para buscar outras ocorrencias
-        }
-        // passo 6: se ha um mismatch
-        else if (i < n && string[i] != substring[j]) {
-            // passo 6a: se j eh zero
-            if (j == 0) {
-                i++; // avanca i, mantendo j em 0
-            }
-            // passo 6b: Se j eh maior que zero
-            else {
-                j = 0; // reinicia j, mas mantem i
-            }
-        }
-    }
-}
-        
-```
-
-
-:::
-???
-
-
-Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no texto, mas ainda realiza 
- comparações redundantes, já que reinicia j para 0 em cada mismatch. Sua complexidade no pior caso pode 
- se aproximar de O(n * m), onde n é o tamanho do texto e m é o tamanho do padrão.
+Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente.
 
 
 ## Retirando a Redundância: O Vetor de LPS

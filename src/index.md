@@ -41,22 +41,14 @@ bruta do algoritimo ingênuo.
 ## Aprofundando no Algoritimo ingênuo
 
 
-Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise 
- de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.
-
-
-Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings. 
- Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de "brute force", 
- ou seja, ele testa todas as combinações possiveis para encontrar padrões.
-
-
+Tendo visto o problema como um todo, vamos entender o princípio básico de busca por padrões, a "força bruta".
+Pensemos, primeiro, na abordagem de busca de padrão mais simples, que é, dado um padrão desejado, vamos buscar um trecho 
+onde a ordem e o número de caracteres seja extamente igual ao do padrão desejado.  
 
 
 ??? Exercício
 
-
-Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve 
- receber para seu funcionemento: `void algoritimo_ingenuo(???){...}`.
+Dado esse princípio de funcionamento, pense em quais argumentos o algoritimo ingênuo recebe: `void algoritimo_ingenuo(???){...}`
 
 
 
@@ -75,72 +67,62 @@ Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as
 ???
 
 
-Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:
+Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo.
+Pensando no princípio de funcionamento do algoritmo, temos que ele percorre toda a string principal, já tendo uma sequência desejada (o padrão).
+Se o caractere atual da string não for compatível com o primeiro caractere do padrão, o algoritmo simplesmente avança para a próxima posição, pois já se sabe que não há um padrão começando ali.
+Porém, a partir do momento em que ele encontra uma compatibilidade com o primeiro caractere do padrão, ele passa a comparar também o segundo caractere do padrão com o caractere seguinte da string, e assim sucessivamente.
+Esse processo se repete até que o padrão completo seja verificado ou uma incompatibilidade seja encontrada. Quando o padrão é encontrado, sua posição é registrada, e o algoritmo continua a busca no restante da string.
 
 
+
+Em alto nível, essa seria a descrição que se adequaria da melhor forma em algo como: 
 
 ``` c
 
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i < n - m; i++){
-        // loop para percorrer a string
-    }
+    // para cada i em (0, 1, 2, ..., n - m)
+    //     verifica se a substring ocorre a partir da posição i
+    //     para cada j em (0, 1, 2, ..., m - 1)
+    //         se string[i + j] ≠ substring[j]
+    //             interrompe a verificação (não é uma ocorrência)
+    //     se todos os caracteres da substring foram verificados com sucesso
+    //         registra a posição i como ocorrência do padrão
 }
 
+
 ```
+
+O Comportamento esperado do código, dessa forma, seria algo como: 
+
+Vamos ver uma simples demonstração de como ele funciona por meio da animação:
+
+
+:ingenuo_01
 
 
 
 ??? Exercício
 
 
-Completando um pouco mais o código, chegamos dentro do loop de comparação das strings:
+Bom, você já tem a faca e o queijo na mão para implementar o algoritimo ingênuo, então, agora, implemente o algoritimo ingênuo 
+abaixo.
 
 
 
 ``` c
 
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i < n - m; i++){
-        for (int j = 0; j < m; j++) {
-            //loop de comparação
-        }
-    }
+    // complete a função!
 }
 
 ```
 
-Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as 
- comparações de caractéres das strings enquanto elas estiverem iguais.
+
 
 
 
 
 ::: Gabarito
-
-
-``` c
-
-void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for (int i = 0; i <= n - m; i++) {
-        for (int j = 0; j < m; j++) {
-            if (string[i + j] != substring[j]){
-                break;
-            }
-        }
-    }
-}
-
-```
-
-
-:::
-???
-
-
-Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para 
- que ele nos devolva os indices onde o padrão foi encontrado:
-
 
 
 ``` c
@@ -160,10 +142,14 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 
 ```
 
-Vamos ver uma simples demonstração de como ele funciona por meio da animação:
+
+:::
+???
 
 
-:ingenuo_01
+
+```
+
 
 
 ??? Exercício
@@ -183,14 +169,14 @@ Como o algoritmo ingênuo compara cada posição da string principal, e em cada 
 :::
 ???
 
-Agora vamos tentar com uma string e substring maiores:
+Olhando só para complexidade, não parece ser tão massante, não é? Bem, até agora, só demos exemplos pequenos, mas para uma string ainda maior, o algoritimo performa algo como:
 
 
 :ingenuo_02
 
-Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.
+Percebe-se então,um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.
 
-Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de \(O(nm)\) no pior caso, tornando-o inviável para strings longas.
+Dessa forma, temos um claro problema de eficiência, mas, e se o nosso código conseguisse "pular" regiões sem padrão da string? É aí que entra o algoritimo KMP.
 
 ##  O KMP
 

@@ -312,148 +312,341 @@ Essa abordagem é mais eficiente que a busca ingênua, pois evita retroceder no 
 
 ## Retirando a Redundância: O Vetor de LPS
 
+## 1. Por que precisamos do LPS?
 
-O vetor Longest Proper Prefix which is also Suffix (LPS) serve é o Coração do algoritimo KMP. A Abordagem que ele adota de indentificar
- o padrão é, como o nome já sugere, entender até que ponto do comprimento o prefixo é igual ao sufixo de uma string. Essa padronização é 
- utilizada para direcionar a eficiência do algoritimo que, ao invés de retroceder, agora, só volta até a parte onde ainda não temos padrões.
- Mas como eu vou entender padrões comparando prefixos com sufixos? É aí que a mágica vem... 
- 
+Ao buscar um padrão dentro de um texto, algoritmos ingênuos comparam tudo de novo sempre que ocorre um erro. Isso gera muitas repetições desnecessárias.
 
+O vetor **LPS (Longest Proper Prefix which is also Suffix)** evita isso: ele indica até onde podemos "reaproveitar" o que já foi casado no padrão, sem voltar no texto. 
+
+Com ele, o algoritmo KMP sabe exatamente onde retomar a busca, tornando tudo mais eficiente.
+
+## 2. Como o LPS é construído?
+
+Para cada posição {red}(i) no padrão, o algoritmo KMP calcula {red}(lps[i]), que representa o comprimento do maior **prefixo próprio** da substring {red}(padrao[0...i]) que também é um **sufixo próprio** dessa mesma substring.
+
+Esse valor indica o quanto do padrão já foi reconhecido e pode ser reaproveitado, caso haja falha durante a busca no texto.
+
+Abaixo, mostramos passo a passo a construção do vetor LPS para o padrão {red}(ABABAC).
+
+??? Importante!
+
+Lembre-se que o prefixo sempre começa da primeira letra e exclui a última, enquanto o sufixo termina na última letra e exclui a primeira.
+
+Exemplo: 
+
+Na palavra INSPER os **prefixos** seriam: I, IN, INS, INSP e INSPE.
+
+Enquanto os **sufixos** seriam: R, ER, PER, SPER, NSPER.
+
+
+
+???
 
 
 
 ??? Exercício
 
+Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
 
-Suponhas as seguintes sequências de caracteres
+![](LPS/LPS_0.png)
 
+Não temos prefixos ou sufixos em palavras de uma letra, por isso começamos sempre com 0 na primeira posição do vetor.
 
-1.ABCABCABCABC
+::: i = 1
 
+![](LPS/LPS_1.png)
 
-2.ABABACABABACABABA
+Prefixo: "A"      
 
+Sufixo: "B"
 
-3.ABCABDABCABEABCABDABCABEABCABD
-
-
-Qual o Padrão textual presente em cada uma delas?
-
-
-
-
-::: Gabarito
-
-1.ABC - Note que aqui a sequência é simples, só temos que ver quando o caractere A se repete novamente
+Não temos igualdade, então colocamos 0 novamente no vetor.
 
 
-2.ABABA - Aqui, já vemos um grau de ruptura, com a letra "c" entre alguns padrões
+::: i = 2
 
+![](LPS/LPS_2.png)
 
-3.ABCABDABCABE - Já temos padrões grandes e difíceis de se indentificar visualmente, com grandes quebras claras
+Prefixos: "A", "AB"     
 
+Sufixos: "A", "BA"
 
+"A" se repete e tem tamanho 1, então colocamos 1 na próxima casa do vetor.
+
+::: i = 3
+
+![](LPS/LPS_3.png)
+
+Prefixos: "A", **"AB"**, "ABA"   
+
+Sufixos: "B", **"AB"**, "BAB"
+
+LPS[i] = 2
+
+::: i = 4
+
+![](LPS/LPS_4.png)
+
+Prefixos: "A", "AB", **"ABA"**, "ABAB" 
+
+Sufixos: "A", "BA", **"ABA"**, "BABA"
+
+LPS[i] = 3
+
+::: i = 5
+
+![](LPS/LPS_5.png)
+
+Prefixos: "A", "AB", "ABA", "ABAB", "ABABA"
+
+Sufixos: "C", "AC", "BAC", "ABAC", "BABAC"
+
+LPS[i] = 0
 
 :::
 ???
 
-Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue três etapas naturais. Primeiro, reconhecemos pequenas repetições locais, comparando trechos que já vimos com o que estamos lendo agora. Depois, procuramos uma regularidade, tentando identificar se essas repetições seguem um tamanho ou ritmo constante. Por fim, condensamos essas repetições em uma ideia única para economizar esforço, enxergando, por exemplo, "ABC" repetido, em vez de cada letra separada. Esse raciocínio leva naturalmente a buscar partes do início (prefixos) que também aparecem no final (sufixos), pois eles já foram confirmados e podem ser reutilizados.Logo, o LPS sintetiza esse raciocínio em uma lógica intuitiva.
- 
+## 3. Construindo o algoritmo do vetor LPS
 
+Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
 
+??? Passo 0
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+
+    // Restante do código
+                
+}
+
+```
+
+O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
+
+::: Passo 1
 
 ``` c
 
 void lps(char padrao[], int m, int* lps){
                 
-    inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
+    // iniciamos definindo lps[0] como 0
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
                 
-    defina lps[0] como 0, porque um único caractere não tem prefixo nem sufixo
-            
-    inicie o contador i em 1
-            
-        enquanto i for menor que m, continue o processamento {
-            se padrao[i] for igual a padrao[comprimento] {
-                incremente o comprimento
-                atribua lps[i] como o novo comprimento
-                avance i
-            }
-            caso contrário {
-                se comprimento for diferente de 0 {
-                    atualize o comprimento para o valor de lps[comprimento - 1]
-                    não avance i ainda, pois vamos tentar casar um prefixo menor
-                }
-                se comprimento for igual a 0 {
-                    defina lps[i] como 0
-                    avance i
-                }
-            }
-        }
-    }
-            
-```
-
-
-
-??? Exercício
-
-
-A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em C ficaria
-
-
-
-``` c
-
-        void lps(char padrao[], int m, int* lps){
-            
-            ...
-
-        }
-        
-```
-
-
-
-::: Gabarito
-
-
-``` c
-
-void lps(char padrao[], int m, int lps[]){
-    
-    // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
-    int comprimento = 0;
     lps[0] = 0;
 
-    // Passo 3: Começa a análise do segundo caractere
-    int i = 1;
+}
+            
+```
+:::
 
-    // Passo 4: Percorre o padrão até o final
+::: Passo 2
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    // definimos um contador i que vai percorrer o padrao.
+    // também ja podemos definir uma variável para guardarmos o comprimento do prefixo/sufixo igual atual.
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1 // i começa em 1 porque já sabemos o que tem na posição 0.
+    comprimento = 0
+
+
+}
+            
+```
+:::
+
+::: Passo 3
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Percorre o padrão até o final
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
     while (i < m) {
 
-        // Passo 5: Se os caracteres combinam, atualiza comprimento e LPS
+    }
+
+
+}
+            
+```
+:::
+
+::: Passo 4
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual bate com o caractere em 'comprimento'
+    // Significa que estendemos um prefixo que também é sufixo
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i < m) {
+
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
         
+    }
+
+
+}
+            
+```
+:::
+
+::: Passo 5
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual nao bate com o caractere do comprimento, tentamos com um comprimento menor, até que o comprimento seja 0.
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i < m) {
+
         if (padrao[i] == padrao[comprimento]) {
             comprimento++;
             lps[i] = comprimento;
             i++;
         }
 
-        // Passo 6: Se os caracteres não combinam
         else {
             if (comprimento != 0) {
-                comprimento = lps[comprimento - 1];
+                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
             } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+        
+    }
+
+
+}
+            
+```
+:::
+
+::: RESUMO
+
+``` c
+
+void lps(char padrao[], int m, int* lps) {
+    // O primeiro caractere nunca tem prefixo próprio → lps[0] = 0
+    lps[0] = 0;
+
+    // comprimento guarda o tamanho do maior prefixo próprio que também é sufixo
+    int comprimento = 0;
+
+    // Começamos a análise a partir do segundo caractere
+    int i = 1;
+
+    while (i < m) {
+        // Caso os caracteres batam: padrao[i] estende o prefixo já conhecido
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;          // aumentamos o comprimento do prefixo/sufixo atual
+            lps[i] = comprimento;   // salvamos esse valor no vetor LPS
+            i++;                    // avançamos no padrão
+        }
+        else {
+            // Se já tínhamos um prefixo parcial, tentamos recuar para um menor
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+                // Note que não avançamos i — vamos tentar casar novamente
+            }
+            else {
+                // Se não há mais prefixo a testar, o valor de lps[i] é 0
                 lps[i] = 0;
                 i++;
             }
         }
     }
 }
-        
+
+            
 ```
 :::
+
 ???
+
+
+
 ## Otimizando o KMP
 
 Utilizando o LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. Vamos olhar como fica o código do KMP agora:

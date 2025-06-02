@@ -222,21 +222,6 @@ void lps(char padrao[], int m, int* lps){
 <p>O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.</p>
 <details class="answer">
 <summary>Passo 1</summary>
-<h2>3. Construindo o algoritmo do vetor LPS</h2>
-<p>Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.</p>
-<blockquote class="question">
-<p>Passo 0</p>
-<pre><code class="language-c">
-void lps(char padrao[], int m, int* lps){
-
-    // Restante do código
-                
-}
-
-</code></pre>
-<p>O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.</p>
-<details class="answer">
-<summary>Passo 1</summary>
 <pre><code class="language-c">
 void lps(char padrao[], int m, int* lps){
                 
@@ -286,30 +271,18 @@ void lps(char padrao[], int m, int* lps){
 </details>
 <details class="answer">
 <summary>Passo 3</summary>
-</details>
-</details>
-<details class="answer">
-<summary>Passo 3</summary>
 <pre><code class="language-c">
 void lps(char padrao[], int m, int* lps){
                 
 
     // Percorre o padrão até o final
-void lps(char padrao[], int m, int* lps){
-                
 
-    // Percorre o padrão até o final
-
-}
-            
 }
             
 </code></pre>
 <details class="answer">
 <summary>Tradução para código</summary>
 <pre><code class="language-c">
-void lps(char padrao[], int m, int* lps){
-                
 void lps(char padrao[], int m, int* lps){
                 
     lps[0] = 0;
@@ -396,7 +369,6 @@ void lps(char padrao[], int m, int* lps){
 
         else {
             if (comprimento != 0) {
-                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
                 comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
             } else {
                 lps[i] = 0;

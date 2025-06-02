@@ -309,62 +309,6 @@ Prefixos: "A", "AB", "ABA", "ABAB", "ABABA"
 Sufixos: "C", "AC", "BAC", "ABAC", "BABAC"
 
 LPS[i] = 0
-Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
-
-![](LPS/LPS_0.png)
-
-Não temos prefixos ou sufixos em palavras de uma letra, por isso começamos sempre com 0 na primeira posição do vetor.
-
-::: i = 1
-
-![](LPS/LPS_1.png)
-
-Prefixo: "A"      
-
-Sufixo: "B"
-
-Não temos igualdade, então colocamos 0 novamente no vetor.
-
-
-::: i = 2
-
-![](LPS/LPS_2.png)
-
-Prefixos: "A", "AB"     
-
-Sufixos: "A", "BA"
-
-"A" se repete e tem tamanho 1, então colocamos 1 na próxima casa do vetor.
-
-::: i = 3
-
-![](LPS/LPS_3.png)
-
-Prefixos: "A", **"AB"**, "ABA"   
-
-Sufixos: "B", **"AB"**, "BAB"
-
-LPS[i] = 2
-
-::: i = 4
-
-![](LPS/LPS_4.png)
-
-Prefixos: "A", "AB", **"ABA"**, "ABAB" 
-
-Sufixos: "A", "BA", **"ABA"**, "BABA"
-
-LPS[i] = 3
-
-::: i = 5
-
-![](LPS/LPS_5.png)
-
-Prefixos: "A", "AB", "ABA", "ABAB", "ABABA"
-
-Sufixos: "C", "AC", "BAC", "ABAC", "BABAC"
-
-LPS[i] = 0
 
 :::
 ???
@@ -388,25 +332,6 @@ void lps(char padrao[], int m, int* lps){
 O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
 
 ::: Passo 1
-## 3. Construindo o algoritmo do vetor LPS
-
-Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
-
-??? Passo 0
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-
-    // Restante do código
-                
-}
-
-```
-
-O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
-
-::: Passo 1
 
 ``` c
 
@@ -491,107 +416,14 @@ void lps(char padrao[], int m, int* lps){
 
 
 }
-    // iniciamos definindo lps[0] como 0
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-}
-            
-```
-:::
-
-::: Passo 2
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    // definimos um contador i que vai percorrer o padrao.
-    // também ja podemos definir uma variável para guardarmos o comprimento do prefixo/sufixo igual atual.
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1 // i começa em 1 porque já sabemos o que tem na posição 0.
-    comprimento = 0
-
-
-}
-            
-```
-:::
-
-::: Passo 3
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Percorre o padrão até o final
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1
-    comprimento = 0
-
-    while (i < m) {
-
-    }
-
-
-}
             
 ```
 :::
 
 ::: Passo 4
-:::
-
-::: Passo 4
 
 ``` c
 
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Se o caractere atual bate com o caractere em 'comprimento'
-    // Significa que estendemos um prefixo que também é sufixo
-
-}
-            
-```
-
-::: Tradução para código
 void lps(char padrao[], int m, int* lps){
                 
 
@@ -648,57 +480,12 @@ void lps(char padrao[], int m, int* lps){
 
 void lps(char padrao[], int m, int* lps){
                 
-void lps(char padrao[], int m, int* lps){
-                
     lps[0] = 0;
 
     i = 1
     comprimento = 0
 
     while (i < m) {
-
-        if (padrao[i] == padrao[comprimento]) {
-            comprimento++;
-            lps[i] = comprimento;
-            i++;
-        }
-        
-    }
-
-
-}
-            
-```
-:::
-
-::: Passo 5
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Se o caractere atual nao bate com o caractere do comprimento, tentamos com um comprimento menor, até que o comprimento seja 0.
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1
-    comprimento = 0
-    i = 1
-    comprimento = 0
-
-    while (i < m) {
-
 
         if (padrao[i] == padrao[comprimento]) {
             comprimento++;
@@ -709,21 +496,16 @@ void lps(char padrao[], int m, int* lps){
         else {
             if (comprimento != 0) {
                 comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
-                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
             } else {
                 lps[i] = 0;
                 i++;
             }
         }
         
-        
     }
 
 
-
-
 }
-            
             
 ```
 :::

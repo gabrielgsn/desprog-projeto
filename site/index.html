@@ -49,63 +49,57 @@ com sequências longas e repetitivas — como ocorre em genomas.</p>
 <p>Dessa forma, precisamos entender o princípio por trás desses algoritimos para solucionarmos o problema,e, por isso, começaremos com a força
 bruta do algoritimo ingênuo.</p>
 <h2>Aprofundando no Algoritimo ingênuo</h2>
-<p>Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise
-de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.</p>
-<p>Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings.
-Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de “brute force”,
-ou seja, ele testa todas as combinações possiveis para encontrar padrões.</p>
+<p>Tendo visto o problema como um todo, vamos entender o princípio básico de busca por padrões, a “força bruta”.
+Pensemos, primeiro, na abordagem de busca de padrão mais simples, que é, dado um padrão desejado, vamos buscar um trecho
+onde a ordem e o número de caracteres seja extamente igual ao do padrão desejado.</p>
 <blockquote class="question">
 <p>Exercício</p>
-<p>Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve
-receber para seu funcionemento: <code class="language-void">algoritimo_ingenuo(???){...}</code>.</p>
+<p>Dado esse princípio de funcionamento, pense em quais argumentos o algoritimo ingênuo recebe: <code class="language-void">algoritimo_ingenuo(???){...}</code></p>
 <details class="answer">
 <summary>Gabarito</summary>
 <p>Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as 2 strings e seus tamanhos:</p>
 <p><code class="language-void">algoritimo_ingênuo(char string[], char substring[], int n, int m){...}</code></p>
 </details>
 </blockquote>
-<p>Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:</p>
+<p>Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo.
+Pensando no princípio de funcionamento do algoritmo, temos que ele percorre toda a string principal, já tendo uma sequência desejada (o padrão). Se o caractere atual da string não for compatível com o primeiro caractere do padrão, o algoritmo simplesmente avança para a próxima posição, pois já se sabe que não há um padrão começando ali.</p>
+<p>Em alto nível, essa seria a descrição que se adequaria da melhor forma em algo como:</p>
 <pre><code class="language-c">
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i &lt; n - m; i++){
-        // loop para percorrer a string
-    }
+    // para cada i em (0, 1, 2, ..., n - m)
+    //    verifica se a substring ocorre a partir da posição i
+    //    se for igual ao primeiro algoritimo da substring, a sequência inicia
 }
 
+
 </code></pre>
+<p>Iniciar com o loop principal é um bom começo, mas não demora muito até percebermos que o código não consegue indentificar onde termina, precisamos de outro índice para isso, verificando a compatibilidade do início ao fim. Assim, precisamos expandir o raciocínio para algo como:</p>
+<pre><code class="language-c">
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    // para cada i em (0, 1, 2, ..., n - m)
+    //     verifica se a substring ocorre a partir da posição i
+    //     para cada j em (0, 1, 2, ..., m - 1)
+    //         se string[i + j] ≠ substring[j]
+    //             interrompe a verificação (não é uma ocorrência)
+    //     se todos os caracteres da substring foram verificados com sucesso
+    //         registra a posição i como ocorrência do padrão
+}
+
+
+</code></pre>
+<p>Assim, o comportamento do código é algo como:</p>
+<div class="animation"><img class="frame" src="img/ingenuo_01/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo_01/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo_01/ingenuo04.png" alt="3"><img class="frame" src="img/ingenuo_01/ingenuo05.png" alt="4"><img class="frame" src="img/ingenuo_01/ingenuo06.png" alt="5"><img class="frame" src="img/ingenuo_01/ingenuo07.png" alt="6"><img class="frame" src="img/ingenuo_01/ingenuo08.png" alt="7"><img class="frame" src="img/ingenuo_01/ingenuo09.png" alt="8"><img class="frame" src="img/ingenuo_01/ingenuo10.png" alt="9"><img class="frame" src="img/ingenuo_01/ingenuo11.png" alt="10"><img class="frame" src="img/ingenuo_01/ingenuo12.png" alt="11"><img class="frame" src="img/ingenuo_01/ingenuo13.png" alt="12"></div>
 <blockquote class="question">
 <p>Exercício</p>
-<p>Completando um pouco mais o código, chegamos dentro do loop de comparação das strings:</p>
+<p>Bom, você já tem a faca e o queijo na mão para implementar o algoritimo ingênuo, então mãos à massa!</p>
 <pre><code class="language-c">
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i &lt; n - m; i++){
-        for (int j = 0; j &lt; m; j++) {
-            //loop de comparação
-        }
-    }
+    // complete a função!
 }
 
 </code></pre>
-<p>Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as
-comparações de caractéres das strings enquanto elas estiverem iguais.</p>
 <details class="answer">
 <summary>Gabarito</summary>
-<pre><code class="language-c">
-void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for (int i = 0; i &lt;= n - m; i++) {
-        for (int j = 0; j &lt; m; j++) {
-            if (string[i + j] != substring[j]){
-                break;
-            }
-        }
-    }
-}
-
-</code></pre>
-</details>
-</blockquote>
-<p>Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para
-que ele nos devolva os indices onde o padrão foi encontrado:</p>
 <pre><code class="language-c">
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
     for (int i = 0; i &lt;= n - m; i++) {
@@ -121,32 +115,34 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 }
 
 </code></pre>
-<p>Vamos ver uma simples demonstração de como ele funciona por meio da animação:</p>
-<div class="animation"><img class="frame" src="img/ingenuo_01/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo_01/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo_01/ingenuo04.png" alt="3"><img class="frame" src="img/ingenuo_01/ingenuo05.png" alt="4"><img class="frame" src="img/ingenuo_01/ingenuo06.png" alt="5"><img class="frame" src="img/ingenuo_01/ingenuo07.png" alt="6"><img class="frame" src="img/ingenuo_01/ingenuo08.png" alt="7"><img class="frame" src="img/ingenuo_01/ingenuo09.png" alt="8"><img class="frame" src="img/ingenuo_01/ingenuo10.png" alt="9"><img class="frame" src="img/ingenuo_01/ingenuo11.png" alt="10"><img class="frame" src="img/ingenuo_01/ingenuo12.png" alt="11"><img class="frame" src="img/ingenuo_01/ingenuo13.png" alt="12"></div>
+</details>
+</blockquote>
+<p>Olhando só para exemplos mais simples, parece tranquilo, né? Mas, pensemos para casos expandidos (e mais próximos da realidade), com strings superiores
+a 15 caracteres, e com baixa compatibilidade de sequência, a força bruta performaria rapidamente?</p>
+<div class="animation"><img class="frame" src="img/ingenuo_02/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo_02/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo_02/ingenuo03.png" alt="3"><img class="frame" src="img/ingenuo_02/ingenuo04.png" alt="4"><img class="frame" src="img/ingenuo_02/ingenuo05.png" alt="5"><img class="frame" src="img/ingenuo_02/ingenuo06.png" alt="6"><img class="frame" src="img/ingenuo_02/ingenuo07.png" alt="7"><img class="frame" src="img/ingenuo_02/ingenuo08.png" alt="8"><img class="frame" src="img/ingenuo_02/ingenuo09.png" alt="9"><img class="frame" src="img/ingenuo_02/ingenuo10.png" alt="10"><img class="frame" src="img/ingenuo_02/ingenuo11.png" alt="11"><img class="frame" src="img/ingenuo_02/ingenuo12.png" alt="12"><img class="frame" src="img/ingenuo_02/ingenuo13.png" alt="13"><img class="frame" src="img/ingenuo_02/ingenuo14.png" alt="14"><img class="frame" src="img/ingenuo_02/ingenuo15.png" alt="15"><img class="frame" src="img/ingenuo_02/ingenuo16.png" alt="16"><img class="frame" src="img/ingenuo_02/ingenuo17.png" alt="17"><img class="frame" src="img/ingenuo_02/ingenuo18.png" alt="18"><img class="frame" src="img/ingenuo_02/ingenuo19.png" alt="19"><img class="frame" src="img/ingenuo_02/ingenuo20.png" alt="20"><img class="frame" src="img/ingenuo_02/ingenuo21.png" alt="21"><img class="frame" src="img/ingenuo_02/ingenuo22.png" alt="22"><img class="frame" src="img/ingenuo_02/ingenuo23.png" alt="23"><img class="frame" src="img/ingenuo_02/ingenuo24.png" alt="24"><img class="frame" src="img/ingenuo_02/ingenuo25.png" alt="25"><img class="frame" src="img/ingenuo_02/ingenuo26.png" alt="26"><img class="frame" src="img/ingenuo_02/ingenuo27.png" alt="27"><img class="frame" src="img/ingenuo_02/ingenuo28.png" alt="28"><img class="frame" src="img/ingenuo_02/ingenuo29.png" alt="29"><img class="frame" src="img/ingenuo_02/ingenuo30.png" alt="30"><img class="frame" src="img/ingenuo_02/ingenuo31.png" alt="31"><img class="frame" src="img/ingenuo_02/ingenuo32.png" alt="32"><img class="frame" src="img/ingenuo_02/ingenuo33.png" alt="33"><img class="frame" src="img/ingenuo_02/ingenuo34.png" alt="34"><img class="frame" src="img/ingenuo_02/ingenuo35.png" alt="35"><img class="frame" src="img/ingenuo_02/ingenuo36.png" alt="36"><img class="frame" src="img/ingenuo_02/ingenuo37.png" alt="37"><img class="frame" src="img/ingenuo_02/ingenuo38.png" alt="38"><img class="frame" src="img/ingenuo_02/ingenuo39.png" alt="39"></div>
+<p>Agora, imaginemos para uma sequência de DNA, teríamos um consumo de memória absurdo!</p>
 <blockquote class="question">
 <p>Exercício</p>
-<p>Agora que estamos familiarizados com o funcionamento deste algoritimo, tente estimar qual vai ser a complexidade dele no seu pior caso.</p>
+<p>Para concretizar essa linha de pensamento, pense rapidamente na complexidade desse algoritimo</p>
 <details class="answer">
 <summary>Gabarito</summary>
 <p>Como o algoritmo ingênuo compara cada posição da string principal, e em cada posição tenta casar a substring. Se a string principal tem tamanho <em>n</em> e a substring tem tamanho <em>m</em>, a complexidade no pior caso é (O(nm) ).</p>
 </details>
 </blockquote>
-<p>Agora vamos tentar com uma string e substring maiores:</p>
-<div class="animation"><img class="frame" src="img/ingenuo_02/ingenuo01.png" alt="1"><img class="frame" src="img/ingenuo_02/ingenuo02.png" alt="2"><img class="frame" src="img/ingenuo_02/ingenuo03.png" alt="3"><img class="frame" src="img/ingenuo_02/ingenuo04.png" alt="4"><img class="frame" src="img/ingenuo_02/ingenuo05.png" alt="5"><img class="frame" src="img/ingenuo_02/ingenuo06.png" alt="6"><img class="frame" src="img/ingenuo_02/ingenuo07.png" alt="7"><img class="frame" src="img/ingenuo_02/ingenuo08.png" alt="8"><img class="frame" src="img/ingenuo_02/ingenuo09.png" alt="9"><img class="frame" src="img/ingenuo_02/ingenuo10.png" alt="10"><img class="frame" src="img/ingenuo_02/ingenuo11.png" alt="11"><img class="frame" src="img/ingenuo_02/ingenuo12.png" alt="12"><img class="frame" src="img/ingenuo_02/ingenuo13.png" alt="13"><img class="frame" src="img/ingenuo_02/ingenuo14.png" alt="14"><img class="frame" src="img/ingenuo_02/ingenuo15.png" alt="15"><img class="frame" src="img/ingenuo_02/ingenuo16.png" alt="16"><img class="frame" src="img/ingenuo_02/ingenuo17.png" alt="17"><img class="frame" src="img/ingenuo_02/ingenuo18.png" alt="18"><img class="frame" src="img/ingenuo_02/ingenuo19.png" alt="19"><img class="frame" src="img/ingenuo_02/ingenuo20.png" alt="20"><img class="frame" src="img/ingenuo_02/ingenuo21.png" alt="21"><img class="frame" src="img/ingenuo_02/ingenuo22.png" alt="22"><img class="frame" src="img/ingenuo_02/ingenuo23.png" alt="23"><img class="frame" src="img/ingenuo_02/ingenuo24.png" alt="24"><img class="frame" src="img/ingenuo_02/ingenuo25.png" alt="25"><img class="frame" src="img/ingenuo_02/ingenuo26.png" alt="26"><img class="frame" src="img/ingenuo_02/ingenuo27.png" alt="27"><img class="frame" src="img/ingenuo_02/ingenuo28.png" alt="28"><img class="frame" src="img/ingenuo_02/ingenuo29.png" alt="29"><img class="frame" src="img/ingenuo_02/ingenuo30.png" alt="30"><img class="frame" src="img/ingenuo_02/ingenuo31.png" alt="31"><img class="frame" src="img/ingenuo_02/ingenuo32.png" alt="32"><img class="frame" src="img/ingenuo_02/ingenuo33.png" alt="33"><img class="frame" src="img/ingenuo_02/ingenuo34.png" alt="34"><img class="frame" src="img/ingenuo_02/ingenuo35.png" alt="35"><img class="frame" src="img/ingenuo_02/ingenuo36.png" alt="36"><img class="frame" src="img/ingenuo_02/ingenuo37.png" alt="37"><img class="frame" src="img/ingenuo_02/ingenuo38.png" alt="38"><img class="frame" src="img/ingenuo_02/ingenuo39.png" alt="39"></div>
-<p>Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.</p>
-<p>Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de (O(nm)) no pior caso, tornando-o inviável para strings longas.</p>
-<h2>O KMP</h2>
-<p>Bom, já ficou bem claro que o problema do Ingênuo é que ele demora porque sempre precisa ficar voltando quando da mismatch dentro da mesma string. É exatamente nesse ponto em que o KMP entra: como podemos fazer o algoritmo não ficar voltando quando não precisa? (dica: a resposta é bem simples)</p>
+<p>Percebe-se então, um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.</p>
+<p>Aqui esta mais uma animação para reforçar mais ainda esse defeito:</p>
+<div class="animation"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-01.png" alt="1"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-02.png" alt="2"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-03.png" alt="3"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-04.png" alt="4"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-05.png" alt="5"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-06.png" alt="6"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-07.png" alt="7"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-08.png" alt="8"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-09.png" alt="9"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-10.png" alt="10"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-11.png" alt="11"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-12.png" alt="12"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-13.png" alt="13"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-14.png" alt="14"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-15.png" alt="15"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-16.png" alt="16"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-17.png" alt="17"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-18.png" alt="18"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-19.png" alt="19"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-20.png" alt="20"></div>
+<p>Bom, dessa forma, fica claro que existe um problema de eficiência neste algoritimo, o que nos faz pensar, como será que podemos melhorar para que ele seja menos redundante?</p>
+<h2>Como podemos melhorar o algoritimo</h2>
+<p>Bom, já ficou bem claro que o problema do Ingênuo é que ele demora devido a redundancia de ficar voltando indices quando ocorre um mismatch dentro da mesma string. Foi na busca da solução deste problema que o KMP foi criado, agora, vamos tentar pensar e entender a solução encontrada para este problema. (dica: a resposta é mais simples do que parece)!</p>
 <blockquote class="question">
 <p>Exercicio</p>
 <p>Como podemos fazer o algoritmo não perder progresso?</p>
 <details class="answer">
 <summary>Gabarito</summary>
-<p>Pulando caracteres quando ele sabe que eles não vão dar match.</p>
+<p>Pulando caracteres que já foram comparados previamente.</p>
 </details>
 </blockquote>
-<p>Para ficar um pouco mais fácil de visualizar esse defeito:</p>
-<div class="animation"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-01.png" alt="1"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-02.png" alt="2"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-03.png" alt="3"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-04.png" alt="4"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-05.png" alt="5"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-06.png" alt="6"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-07.png" alt="7"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-08.png" alt="8"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-09.png" alt="9"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-10.png" alt="10"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-11.png" alt="11"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-12.png" alt="12"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-13.png" alt="13"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-14.png" alt="14"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-15.png" alt="15"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-16.png" alt="16"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-17.png" alt="17"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-18.png" alt="18"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-19.png" alt="19"><img class="frame" src="img/imgs-kmp-ingenuo-1/ingenuo-kmp-20.png" alt="20"></div>
 <p>Agora ficou bem claro qual é a primeira etapa do KMP: pular “casas” quando ele sabe que não vai ocorrer match. Mas quais casam são essas?</p>
 <p>De modo simples: ele pula para casas que sabe que ainda podem dar match, ignorando as que já foram testadas e não funcionam. Explicando melhor, o código procura por um <em>prefixo</em> na substring que também seja um <em>sufixo</em> na string. Isso significa que, ao encontrar um caractere que não combina, o algoritmo pode usar o conhecimento prévio sobre a substring para avançar mais rapidamente.</p>
 <p>Lembrando rapidamente o que são prefixos e sufixos:</p>
@@ -158,107 +154,281 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 <p>Para melhor visualizar isso:</p>
 <div class="animation"><img class="frame" src="img/KMP-1/KMP1-01.png" alt="1"><img class="frame" src="img/KMP-1/KMP1-02.png" alt="2"><img class="frame" src="img/KMP-1/KMP1-03.png" alt="3"><img class="frame" src="img/KMP-1/KMP1-04.png" alt="4"><img class="frame" src="img/KMP-1/KMP1-05.png" alt="5"><img class="frame" src="img/KMP-1/KMP1-06.png" alt="6"><img class="frame" src="img/KMP-1/KMP1-07.png" alt="7"><img class="frame" src="img/KMP-1/KMP1-08.png" alt="8"><img class="frame" src="img/KMP-1/KMP1-09.png" alt="9"><img class="frame" src="img/KMP-1/KMP1-10.png" alt="10"><img class="frame" src="img/KMP-1/KMP1-11.png" alt="11"><img class="frame" src="img/KMP-1/KMP1-12.png" alt="12"><img class="frame" src="img/KMP-1/KMP1-13.png" alt="13"><img class="frame" src="img/KMP-1/KMP1-14.png" alt="14"><img class="frame" src="img/KMP-1/KMP1-15.png" alt="15"><img class="frame" src="img/KMP-1/KMP1-16.png" alt="16"><img class="frame" src="img/KMP-1/KMP1-17.png" alt="17"><img class="frame" src="img/KMP-1/KMP1-18.png" alt="18"><img class="frame" src="img/KMP-1/KMP1-19.png" alt="19"></div>
 <p>Dessa forma, fica mais claro como o KMP funciona: ele tenta casar a substring com a string, e quando ocorre uma incompatibilidade, ele não volta para o início da substring. Em vez disso, ele utiliza o conhecimento prévio sobre os prefixos e sufixos para avançar mais rapidamente.</p>
-<p>Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente.</p>
-<h2>Retirando a Redundância: O Vetor de LPS</h2>
-<p>O vetor Longest Proper Prefix which is also Suffix (LPS) serve é o Coração do algoritimo KMP. A Abordagem que ele adota de indentificar
-o padrão é, como o nome já sugere, entender até que ponto do comprimento o prefixo é igual ao sufixo de uma string. Essa padronização é
-utilizada para direcionar a eficiência do algoritimo que, ao invés de retroceder, agora, só volta até a parte onde ainda não temos padrões.
-Mas como eu vou entender padrões comparando prefixos com sufixos? É aí que a mágica vem…</p>
+<p>Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente e reduzindo significativamente a sua complexidade.</p>
+<h2>Como o LPS é construído?</h2>
+<p>Para cada posição <span class="md-colorify md-colorify--red">i</span> no padrão, o algoritmo KMP calcula <span class="md-colorify md-colorify--red">lps[i]</span>, que representa o comprimento do maior <strong>prefixo próprio</strong> da substring <span class="md-colorify md-colorify--red">padrao[0…i]</span> que também é um <strong>sufixo próprio</strong> dessa mesma substring.</p>
+<p>Esse valor indica o quanto do padrão já foi reconhecido e pode ser reaproveitado, caso haja falha durante a busca no texto.</p>
+<p>Abaixo, mostramos passo a passo a construção do vetor LPS para o padrão <span class="md-colorify md-colorify--red">ABABAC</span>.</p>
+<blockquote class="question">
+<p>Importante!</p>
+<p>Lembre-se que o prefixo sempre começa da primeira letra e exclui a última, enquanto o sufixo termina na última letra e exclui a primeira.</p>
+<p>Exemplo:</p>
+<p>Na palavra INSPER os <strong>prefixos</strong> seriam: I, IN, INS, INSP e INSPE.</p>
+<p>Enquanto os <strong>sufixos</strong> seriam: R, ER, PER, SPER, NSPER.</p>
+</blockquote>
 <blockquote class="question">
 <p>Exercício</p>
-<p>Suponhas as seguintes sequências de caracteres</p>
-<p>1.ABCABCABCABC</p>
-<p>2.ABABACABABACABABA</p>
-<p>3.ABCABDABCABEABCABDABCABEABCABD</p>
-<p>Qual o Padrão textual presente em cada uma delas?</p>
+<p>Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, <span class="md-colorify md-colorify--red">padrão[0…i]</span>, depois complete o vetor com o tamanho deste elemento.</p>
+<figure class="img"><img src="img/LPS/LPS_0.png" alt=""></figure>
+<p>Não temos prefixos ou sufixos em palavras de uma letra, por isso começamos sempre com 0 na primeira posição do vetor.</p>
 <details class="answer">
-<summary>Gabarito</summary>
-<p>1.ABC - Note que aqui a sequência é simples, só temos que ver quando o caractere A se repete novamente</p>
-<p>2.ABABA - Aqui, já vemos um grau de ruptura, com a letra “c” entre alguns padrões</p>
-<p>3.ABCABDABCABE - Já temos padrões grandes e difíceis de se indentificar visualmente, com grandes quebras claras</p>
+<summary>i = 1</summary>
+<figure class="img"><img src="img/LPS/LPS_1.png" alt=""></figure>
+<p>Prefixo: “A”</p>
+<p>Sufixo: “B”</p>
+<p>Não temos igualdade, então colocamos 0 novamente no vetor.</p>
+<details class="answer">
+<summary>i = 2</summary>
+<figure class="img"><img src="img/LPS/LPS_2.png" alt=""></figure>
+<p>Prefixos: “A”, “AB”</p>
+<p>Sufixos: “A”, “BA”</p>
+<p>“A” se repete e tem tamanho 1, então colocamos 1 na próxima casa do vetor.</p>
+<details class="answer">
+<summary>i = 3</summary>
+<figure class="img"><img src="img/LPS/LPS_3.png" alt=""></figure>
+<p>Prefixos: “A”, <strong>“AB”</strong>, “ABA”</p>
+<p>Sufixos: “B”, <strong>“AB”</strong>, “BAB”</p>
+<p>LPS[i] = 2</p>
+<details class="answer">
+<summary>i = 4</summary>
+<figure class="img"><img src="img/LPS/LPS_4.png" alt=""></figure>
+<p>Prefixos: “A”, “AB”, <strong>“ABA”</strong>, “ABAB”</p>
+<p>Sufixos: “A”, “BA”, <strong>“ABA”</strong>, “BABA”</p>
+<p>LPS[i] = 3</p>
+<details class="answer">
+<summary>i = 5</summary>
+<figure class="img"><img src="img/LPS/LPS_5.png" alt=""></figure>
+<p>Prefixos: “A”, “AB”, “ABA”, “ABAB”, “ABABA”</p>
+<p>Sufixos: “C”, “AC”, “BAC”, “ABAC”, “BABAC”</p>
+<p>LPS[i] = 0</p>
+</details>
+</details>
+</details>
+</details>
 </details>
 </blockquote>
-<p>Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue três etapas naturais. Primeiro, reconhecemos pequenas repetições locais, comparando trechos que já vimos com o que estamos lendo agora. Depois, procuramos uma regularidade, tentando identificar se essas repetições seguem um tamanho ou ritmo constante. Por fim, condensamos essas repetições em uma ideia única para economizar esforço, enxergando, por exemplo, “ABC” repetido, em vez de cada letra separada. Esse raciocínio leva naturalmente a buscar partes do início (prefixos) que também aparecem no final (sufixos), pois eles já foram confirmados e podem ser reutilizados.Logo, o LPS sintetiza esse raciocínio em uma lógica intuitiva.</p>
+<h2>3. Construindo o algoritmo do vetor LPS</h2>
+<p>Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.</p>
+<blockquote class="question">
+<p>Passo 0</p>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+
+    // Restante do código
+                
+}
+
+</code></pre>
+<p>O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.</p>
+<details class="answer">
+<summary>Passo 1</summary>
 <pre><code class="language-c">
 void lps(char padrao[], int m, int* lps){
                 
-    inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
-                
-    defina lps[0] como 0, porque um único caractere não tem prefixo nem sufixo
-            
-    inicie o contador i em 1
-            
-        enquanto i for menor que m, continue o processamento {
-            se padrao[i] for igual a padrao[comprimento] {
-                incremente o comprimento
-                atribua lps[i] como o novo comprimento
-                avance i
-            }
-            caso contrário {
-                se comprimento for diferente de 0 {
-                    atualize o comprimento para o valor de lps[comprimento - 1]
-                    não avance i ainda, pois vamos tentar casar um prefixo menor
-                }
-                se comprimento for igual a 0 {
-                    defina lps[i] como 0
-                    avance i
-                }
-            }
-        }
-    }
-            
-</code></pre>
-<blockquote class="question">
-<p>Exercício</p>
-<p>A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em C ficaria</p>
-<pre><code class="language-c">
-        void lps(char padrao[], int m, int* lps){
-            
-            ...
+    // iniciamos definindo lps[0] como 0
 
-        }
-        
+}
+            
 </code></pre>
 <details class="answer">
-<summary>Gabarito</summary>
+<summary>Tradução para código</summary>
 <pre><code class="language-c">
-void lps(char padrao[], int m, int lps[]){
-    
-    // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
-    int comprimento = 0;
+void lps(char padrao[], int m, int* lps){
+                
     lps[0] = 0;
 
-    // Passo 3: Começa a análise do segundo caractere
-    int i = 1;
+}
+            
+</code></pre>
+</details>
+</details>
+<details class="answer">
+<summary>Passo 2</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+    // definimos um contador i que vai percorrer o padrao.
+    // também ja podemos definir uma variável para guardarmos o comprimento do prefixo/sufixo igual atual.
 
-    // Passo 4: Percorre o padrão até o final
+}
+            
+</code></pre>
+<details class="answer">
+<summary>Tradução para código</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1 // i começa em 1 porque já sabemos o que tem na posição 0.
+    comprimento = 0
+
+
+}
+            
+</code></pre>
+</details>
+</details>
+<details class="answer">
+<summary>Passo 3</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Percorre o padrão até o final
+
+}
+            
+</code></pre>
+<details class="answer">
+<summary>Tradução para código</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
     while (i &lt; m) {
 
-        // Passo 5: Se os caracteres combinam, atualiza comprimento e LPS
+    }
+
+
+}
+            
+</code></pre>
+</details>
+</details>
+<details class="answer">
+<summary>Passo 4</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual bate com o caractere em 'comprimento'
+    // Significa que estendemos um prefixo que também é sufixo
+
+}
+            
+</code></pre>
+<details class="answer">
+<summary>Tradução para código</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i &lt; m) {
+
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
         
+    }
+
+
+}
+            
+</code></pre>
+</details>
+</details>
+<details class="answer">
+<summary>Passo 5</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual nao bate com o caractere do comprimento, tentamos com um comprimento menor, até que o comprimento seja 0.
+
+}
+            
+</code></pre>
+<details class="answer">
+<summary>Tradução para código</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i &lt; m) {
+
         if (padrao[i] == padrao[comprimento]) {
             comprimento++;
             lps[i] = comprimento;
             i++;
         }
 
-        // Passo 6: Se os caracteres não combinam
         else {
             if (comprimento != 0) {
-                comprimento = lps[comprimento - 1];
+                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
             } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+        
+    }
+
+
+}
+            
+</code></pre>
+</details>
+</details>
+<details class="answer">
+<summary>RESUMO</summary>
+<pre><code class="language-c">
+void lps(char padrao[], int m, int* lps) {
+    // O primeiro caractere nunca tem prefixo próprio → lps[0] = 0
+    lps[0] = 0;
+
+    // comprimento guarda o tamanho do maior prefixo próprio que também é sufixo
+    int comprimento = 0;
+
+    // Começamos a análise a partir do segundo caractere
+    int i = 1;
+
+    while (i &lt; m) {
+        // Caso os caracteres batam: padrao[i] estende o prefixo já conhecido
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;          // aumentamos o comprimento do prefixo/sufixo atual
+            lps[i] = comprimento;   // salvamos esse valor no vetor LPS
+            i++;                    // avançamos no padrão
+        }
+        else {
+            // Se já tínhamos um prefixo parcial, tentamos recuar para um menor
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+                // Note que não avançamos i — vamos tentar casar novamente
+            }
+            else {
+                // Se não há mais prefixo a testar, o valor de lps[i] é 0
                 lps[i] = 0;
                 i++;
             }
         }
     }
 }
-        
+
+            
 </code></pre>
 </details>
 </blockquote>
-<h2>Otimizando o KMP</h2>
-<p>Utilizando o LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. Vamos olhar como fica o código do KMP agora:</p>
+<h2>O KMP</h2>
+<p>Como visto anteriormente, por meio do uso do LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo.</p>
+<p>Vamos tentar ver isso em prática, agora, comparando os dois usando os mesmos parametros:</p>
+<div class="animation"><img class="frame" src="img/KMP/KMP01.png" alt="1"><img class="frame" src="img/KMP/KMP02.png" alt="2"><img class="frame" src="img/KMP/KMP03.png" alt="3"><img class="frame" src="img/KMP/KMP04.png" alt="4"><img class="frame" src="img/KMP/KMP05.png" alt="5"><img class="frame" src="img/KMP/KMP06.png" alt="6"><img class="frame" src="img/KMP/KMP07.png" alt="7"><img class="frame" src="img/KMP/KMP08.png" alt="8"><img class="frame" src="img/KMP/KMP09.png" alt="9"><img class="frame" src="img/KMP/KMP10.png" alt="10"><img class="frame" src="img/KMP/KMP11.png" alt="11"><img class="frame" src="img/KMP/KMP12.png" alt="12"><img class="frame" src="img/KMP/KMP13.png" alt="13"><img class="frame" src="img/KMP/KMP14.png" alt="14"><img class="frame" src="img/KMP/KMP15.png" alt="15"><img class="frame" src="img/KMP/KMP16.png" alt="16"><img class="frame" src="img/KMP/KMP17.png" alt="17"><img class="frame" src="img/KMP/KMP18.png" alt="18"><img class="frame" src="img/KMP/KMP19.png" alt="19"><img class="frame" src="img/KMP/KMP20.png" alt="20"><img class="frame" src="img/KMP/KMP21.png" alt="21"><img class="frame" src="img/KMP/KMP22.png" alt="22"><img class="frame" src="img/KMP/KMP23.png" alt="23"><img class="frame" src="img/KMP/KMP24.png" alt="24"><img class="frame" src="img/KMP/KMP25.png" alt="25"><img class="frame" src="img/KMP/KMP26-1.png" alt="26"><img class="frame" src="img/KMP/KMP26-2.png" alt="27"><img class="frame" src="img/KMP/KMP27.png" alt="28"><img class="frame" src="img/KMP/KMP28.png" alt="29"><img class="frame" src="img/KMP/KMP29.png" alt="30"><img class="frame" src="img/KMP/KMP30.png" alt="31"><img class="frame" src="img/KMP/KMP31.png" alt="32"><img class="frame" src="img/KMP/KMP32.png" alt="33"><img class="frame" src="img/KMP/KMP33.png" alt="34"><img class="frame" src="img/KMP/KMP34.png" alt="35"><img class="frame" src="img/KMP/KMP35.png" alt="36"><img class="frame" src="img/KMP/KMP36.png" alt="37"><img class="frame" src="img/KMP/KMP37.png" alt="38"></div>
+<p>Como puderam ver, o KMP é muito mais eficiente do que o ingenuo, no exemplo dado, ele completou a análise com quase a metade das iterações utilizadas pelo ingenuo.</p>
+<p>Por fim, vamos dar uma olhada em como ficou a versão final do KMP, com o LPS:</p>
 <pre><code class="language-c">
 void kmp(char string[], char substring[], int n, int m) {
     int lps[m];
@@ -294,8 +464,6 @@ void kmp(char string[], char substring[], int n, int m) {
 <p>Agora que estamos usando o lps, o KMP alcança uma complexidade de (O(n + m)). Isso ocorre porque a construção do vetor LPS, que pré-processa o padrão, é realizada em (O(m)), e a busca na string principal é feita em (O(n)), sem retrocessos desnecessários.</p>
 </details>
 </blockquote>
-<p>Vamos olhar agora para uma animação, demonstrando o funcionamento desta versão do KMP:</p>
-<div class="animation"><img class="frame" src="img/KMP/KMP01.png" alt="1"><img class="frame" src="img/KMP/KMP02.png" alt="2"><img class="frame" src="img/KMP/KMP03.png" alt="3"><img class="frame" src="img/KMP/KMP04.png" alt="4"><img class="frame" src="img/KMP/KMP05.png" alt="5"><img class="frame" src="img/KMP/KMP06.png" alt="6"><img class="frame" src="img/KMP/KMP07.png" alt="7"><img class="frame" src="img/KMP/KMP08.png" alt="8"><img class="frame" src="img/KMP/KMP09.png" alt="9"><img class="frame" src="img/KMP/KMP10.png" alt="10"><img class="frame" src="img/KMP/KMP11.png" alt="11"><img class="frame" src="img/KMP/KMP12.png" alt="12"><img class="frame" src="img/KMP/KMP13-2.png" alt="13"><img class="frame" src="img/KMP/KMP13.png" alt="14"><img class="frame" src="img/KMP/KMP14.png" alt="15"><img class="frame" src="img/KMP/KMP15.png" alt="16"><img class="frame" src="img/KMP/KMP16.png" alt="17"><img class="frame" src="img/KMP/KMP17.png" alt="18"><img class="frame" src="img/KMP/KMP18.png" alt="19"><img class="frame" src="img/KMP/KMP19.png" alt="20"><img class="frame" src="img/KMP/KMP20.png" alt="21"><img class="frame" src="img/KMP/KMP21.png" alt="22"><img class="frame" src="img/KMP/KMP22.png" alt="23"><img class="frame" src="img/KMP/KMP23.png" alt="24"><img class="frame" src="img/KMP/KMP24.png" alt="25"><img class="frame" src="img/KMP/KMP25.png" alt="26"><img class="frame" src="img/KMP/KMP26.png" alt="27"><img class="frame" src="img/KMP/KMP27.png" alt="28"><img class="frame" src="img/KMP/KMP28.png" alt="29"></div>
 
 
         </main>

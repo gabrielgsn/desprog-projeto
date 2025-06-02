@@ -1,4 +1,3 @@
-
 # Algoritimo Knuth-Morris-Pratt
 
 
@@ -41,22 +40,14 @@ bruta do algoritimo ingênuo.
 ## Aprofundando no Algoritimo ingênuo
 
 
-Antes de estudarmos o algoritmo KMP, vamos entender como funciona o principio de análise 
- de padrões de strings utilizando o algoritmo ingênuo e como o algoritmo KMP resolve o principal problema dele.
-
-
-Assim como o KMP, o algoritimo ingênuo também é utilizado para procurar padroẽs em strings. 
- Neste caso, o algoritimo ingênuo realiza esta busca utilizando uma método de "brute force", 
- ou seja, ele testa todas as combinações possiveis para encontrar padrões.
-
-
+Tendo visto o problema como um todo, vamos entender o princípio básico de busca por padrões, a "força bruta".
+Pensemos, primeiro, na abordagem de busca de padrão mais simples, que é, dado um padrão desejado, vamos buscar um trecho 
+onde a ordem e o número de caracteres seja extamente igual ao do padrão desejado.  
 
 
 ??? Exercício
 
-
-Com o contexto de como o algoritimo funciona, pense quais argumentos o algoritmo ingênuo deve 
- receber para seu funcionemento: `void algoritimo_ingenuo(???){...}`.
+Dado esse princípio de funcionamento, pense em quais argumentos o algoritimo ingênuo recebe: `void algoritimo_ingenuo(???){...}`
 
 
 
@@ -75,72 +66,70 @@ Como você deve ter imaginado, ele não precisa receber muitas coisas, apenas as
 ???
 
 
-Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo:
+Agora vamos desenvolver mais este código e tentar montar a estrutura do loop principal do algoritimo.
+Pensando no princípio de funcionamento do algoritmo, temos que ele percorre toda a string principal, já tendo uma sequência desejada (o padrão). Se o caractere atual da string não for compatível com o primeiro caractere do padrão, o algoritmo simplesmente avança para a próxima posição, pois já se sabe que não há um padrão começando ali.
 
 
+Em alto nível, essa seria a descrição que se adequaria da melhor forma em algo como: 
 
 ``` c
 
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i < n - m; i++){
-        // loop para percorrer a string
-    }
+    // para cada i em (0, 1, 2, ..., n - m)
+    //    verifica se a substring ocorre a partir da posição i
+    //    se for igual ao primeiro algoritimo da substring, a sequência inicia
 }
 
+
 ```
+
+
+Iniciar com o loop principal é um bom começo, mas não demora muito até percebermos que o código não consegue indentificar onde termina, precisamos de outro índice para isso, verificando a compatibilidade do início ao fim. Assim, precisamos expandir o raciocínio para algo como:
+
+``` c
+
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    // para cada i em (0, 1, 2, ..., n - m)
+    //     verifica se a substring ocorre a partir da posição i
+    //     para cada j em (0, 1, 2, ..., m - 1)
+    //         se string[i + j] ≠ substring[j]
+    //             interrompe a verificação (não é uma ocorrência)
+    //     se todos os caracteres da substring foram verificados com sucesso
+    //         registra a posição i como ocorrência do padrão
+}
+
+
+```
+
+Assim, o comportamento do código é algo como:
+
+
+
+:ingenuo_01
 
 
 
 ??? Exercício
 
 
-Completando um pouco mais o código, chegamos dentro do loop de comparação das strings:
+Bom, você já tem a faca e o queijo na mão para implementar o algoritimo ingênuo, então mãos à massa!
 
 
 
 ``` c
 
 void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for(int i = 0; i < n - m; i++){
-        for (int j = 0; j < m; j++) {
-            //loop de comparação
-        }
-    }
+    // complete a função!
 }
 
 ```
 
-Usando o código fornecido, tente desenvolver o conteúdo deste loop para que ele continue realizando as 
- comparações de caractéres das strings enquanto elas estiverem iguais.
+
 
 
 
 
 ::: Gabarito
-
-
-``` c
-
-void algoritimo_ingenuo(char string[], char substring[], int n, int m){
-    for (int i = 0; i <= n - m; i++) {
-        for (int j = 0; j < m; j++) {
-            if (string[i + j] != substring[j]){
-                break;
-            }
-        }
-    }
-}
-
-```
-
-
-:::
-???
-
-
-Com a comparação de caractéres feita dentro do loop, apenas precisamos complemetar o codigo para 
- que ele nos devolva os indices onde o padrão foi encontrado:
-
 
 
 ``` c
@@ -160,16 +149,26 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 
 ```
 
-Vamos ver uma simples demonstração de como ele funciona por meio da animação:
+
+:::
+???
 
 
-:ingenuo_01
+
+Olhando só para exemplos mais simples, parece tranquilo, né? Mas, pensemos para casos expandidos (e mais próximos da realidade), com strings superiores 
+a 15 caracteres, e com baixa compatibilidade de sequência, a força bruta performaria rapidamente? 
+
+
+:ingenuo_02
+
+
+Agora, imaginemos para uma sequência de DNA, teríamos um consumo de memória absurdo!
 
 
 ??? Exercício
 
 
-Agora que estamos familiarizados com o funcionamento deste algoritimo, tente estimar qual vai ser a complexidade dele no seu pior caso.
+Para concretizar essa linha de pensamento, pense rapidamente na complexidade desse algoritimo
 
 
 
@@ -183,32 +182,30 @@ Como o algoritmo ingênuo compara cada posição da string principal, e em cada 
 :::
 ???
 
-Agora vamos tentar com uma string e substring maiores:
 
 
-:ingenuo_02
+Percebe-se então, um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados. 
 
-Como pode ser visto nas animações, existe um problema bem aparente neste algoritimo, a sua redundância nas comparações. Quando uma incompatibilidade (mismatch) ocorre, o algoritmo simplesmente avança para a próxima posição na string principal e reinicia a comparação da substring do início, revisitando caracteres que já foram analisados.
+Aqui esta mais uma animação para reforçar mais ainda esse defeito:
 
-Por exemplo, se uma parte da substring já foi confirmada como compatível, o algoritmo ingênuo não aproveita essa informação, resultando em comparações desnecessárias. Essa abordagem leva a uma complexidade de \(O(nm)\) no pior caso, tornando-o inviável para strings longas.
+:imgs-kmp-ingenuo-1
 
-##  O KMP
+Bom, dessa forma, fica claro que existe um problema de eficiência neste algoritimo, o que nos faz pensar, como será que podemos melhorar para que ele seja menos redundante?
 
-Bom, já ficou bem claro que o problema do Ingênuo é que ele demora porque sempre precisa ficar voltando quando da mismatch dentro da mesma string. É exatamente nesse ponto em que o KMP entra: como podemos fazer o algoritmo não ficar voltando quando não precisa? (dica: a resposta é bem simples)
+##  Como podemos melhorar o algoritimo
+
+Bom, já ficou bem claro que o problema do Ingênuo é que ele demora devido a redundancia de ficar voltando indices quando ocorre um mismatch dentro da mesma string. Foi na busca da solução deste problema que o KMP foi criado, agora, vamos tentar pensar e entender a solução encontrada para este problema. (dica: a resposta é mais simples do que parece)!
+
 
 ??? Exercicio
 
 Como podemos fazer o algoritmo não perder progresso?
 
 ::: Gabarito
-Pulando caracteres quando ele sabe que eles não vão dar match.
+Pulando caracteres que já foram comparados previamente.
 :::
 
 ???
-
-Para ficar um pouco mais fácil de visualizar esse defeito:
-
-:imgs-kmp-ingenuo-1
 
 Agora ficou bem claro qual é a primeira etapa do KMP: pular "casas" quando ele sabe que não vai ocorrer match. Mas quais casam são essas?
 
@@ -227,156 +224,346 @@ Para melhor visualizar isso:
 
 Dessa forma, fica mais claro como o KMP funciona: ele tenta casar a substring com a string, e quando ocorre uma incompatibilidade, ele não volta para o início da substring. Em vez disso, ele utiliza o conhecimento prévio sobre os prefixos e sufixos para avançar mais rapidamente.
 
-Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente.
+Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente e reduzindo significativamente a sua complexidade.
 
 
-## Retirando a Redundância: O Vetor de LPS
+## Como o LPS é construído?
+
+Para cada posição {red}(i) no padrão, o algoritmo KMP calcula {red}(lps[i]), que representa o comprimento do maior **prefixo próprio** da substring {red}(padrao[0...i]) que também é um **sufixo próprio** dessa mesma substring.
+
+Esse valor indica o quanto do padrão já foi reconhecido e pode ser reaproveitado, caso haja falha durante a busca no texto.
+
+Abaixo, mostramos passo a passo a construção do vetor LPS para o padrão {red}(ABABAC).
+
+??? Importante!
+
+Lembre-se que o prefixo sempre começa da primeira letra e exclui a última, enquanto o sufixo termina na última letra e exclui a primeira.
+
+Exemplo: 
+
+Na palavra INSPER os **prefixos** seriam: I, IN, INS, INSP e INSPE.
+
+Enquanto os **sufixos** seriam: R, ER, PER, SPER, NSPER.
 
 
-O vetor Longest Proper Prefix which is also Suffix (LPS) serve é o Coração do algoritimo KMP. A Abordagem que ele adota de indentificar
- o padrão é, como o nome já sugere, entender até que ponto do comprimento o prefixo é igual ao sufixo de uma string. Essa padronização é 
- utilizada para direcionar a eficiência do algoritimo que, ao invés de retroceder, agora, só volta até a parte onde ainda não temos padrões.
- Mas como eu vou entender padrões comparando prefixos com sufixos? É aí que a mágica vem... 
- 
 
+???
 
 
 
 ??? Exercício
 
+Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
 
-Suponhas as seguintes sequências de caracteres
+![](LPS/LPS_0.png)
 
+Não temos prefixos ou sufixos em palavras de uma letra, por isso começamos sempre com 0 na primeira posição do vetor.
 
-1.ABCABCABCABC
+::: i = 1
 
+![](LPS/LPS_1.png)
 
-2.ABABACABABACABABA
+Prefixo: "A"      
 
+Sufixo: "B"
 
-3.ABCABDABCABEABCABDABCABEABCABD
-
-
-Qual o Padrão textual presente em cada uma delas?
-
-
-
-
-::: Gabarito
-
-1.ABC - Note que aqui a sequência é simples, só temos que ver quando o caractere A se repete novamente
+Não temos igualdade, então colocamos 0 novamente no vetor.
 
 
-2.ABABA - Aqui, já vemos um grau de ruptura, com a letra "c" entre alguns padrões
+::: i = 2
 
+![](LPS/LPS_2.png)
 
-3.ABCABDABCABE - Já temos padrões grandes e difíceis de se indentificar visualmente, com grandes quebras claras
+Prefixos: "A", "AB"     
 
+Sufixos: "A", "BA"
 
+"A" se repete e tem tamanho 1, então colocamos 1 na próxima casa do vetor.
+
+::: i = 3
+
+![](LPS/LPS_3.png)
+
+Prefixos: "A", **"AB"**, "ABA"   
+
+Sufixos: "B", **"AB"**, "BAB"
+
+LPS[i] = 2
+
+::: i = 4
+
+![](LPS/LPS_4.png)
+
+Prefixos: "A", "AB", **"ABA"**, "ABAB" 
+
+Sufixos: "A", "BA", **"ABA"**, "BABA"
+
+LPS[i] = 3
+
+::: i = 5
+
+![](LPS/LPS_5.png)
+
+Prefixos: "A", "AB", "ABA", "ABAB", "ABABA"
+
+Sufixos: "C", "AC", "BAC", "ABAC", "BABAC"
+
+LPS[i] = 0
 
 :::
 ???
 
-Quando tentamos encontrar padrões em uma sequência, o nosso pensamento segue três etapas naturais. Primeiro, reconhecemos pequenas repetições locais, comparando trechos que já vimos com o que estamos lendo agora. Depois, procuramos uma regularidade, tentando identificar se essas repetições seguem um tamanho ou ritmo constante. Por fim, condensamos essas repetições em uma ideia única para economizar esforço, enxergando, por exemplo, "ABC" repetido, em vez de cada letra separada. Esse raciocínio leva naturalmente a buscar partes do início (prefixos) que também aparecem no final (sufixos), pois eles já foram confirmados e podem ser reutilizados.Logo, o LPS sintetiza esse raciocínio em uma lógica intuitiva.
- 
+## 3. Construindo o algoritmo do vetor LPS
 
+Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
 
+??? Passo 0
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+
+    // Restante do código
+                
+}
+
+```
+
+O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
+
+::: Passo 1
 
 ``` c
 
 void lps(char padrao[], int m, int* lps){
                 
-    inicie o comprimento do maior prefixo próprio e sufixo em 0, ou seja, aqui você está olhando para o maior padrão
+    // iniciamos definindo lps[0] como 0
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
                 
-    defina lps[0] como 0, porque um único caractere não tem prefixo nem sufixo
-            
-    inicie o contador i em 1
-            
-        enquanto i for menor que m, continue o processamento {
-            se padrao[i] for igual a padrao[comprimento] {
-                incremente o comprimento
-                atribua lps[i] como o novo comprimento
-                avance i
-            }
-            caso contrário {
-                se comprimento for diferente de 0 {
-                    atualize o comprimento para o valor de lps[comprimento - 1]
-                    não avance i ainda, pois vamos tentar casar um prefixo menor
-                }
-                se comprimento for igual a 0 {
-                    defina lps[i] como 0
-                    avance i
-                }
-            }
-        }
-    }
-            
-```
-
-
-
-??? Exercício
-
-
-A partir dessa descricao de alto nivel do LPS, tente escrever como seu codigo em C ficaria
-
-
-
-``` c
-
-        void lps(char padrao[], int m, int* lps){
-            
-            ...
-
-        }
-        
-```
-
-
-
-::: Gabarito
-
-
-``` c
-
-void lps(char padrao[], int m, int lps[]){
-    
-    // Passo 1: Inicializa comprimento como 0 e o primeiro caractere do vetor também, já que ele nao tem prefixo e nem sufixo
-    int comprimento = 0;
     lps[0] = 0;
 
-    // Passo 3: Começa a análise do segundo caractere
-    int i = 1;
+}
+            
+```
+:::
 
-    // Passo 4: Percorre o padrão até o final
+::: Passo 2
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    // definimos um contador i que vai percorrer o padrao.
+    // também ja podemos definir uma variável para guardarmos o comprimento do prefixo/sufixo igual atual.
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1 // i começa em 1 porque já sabemos o que tem na posição 0.
+    comprimento = 0
+
+
+}
+            
+```
+:::
+
+::: Passo 3
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Percorre o padrão até o final
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
     while (i < m) {
 
-        // Passo 5: Se os caracteres combinam, atualiza comprimento e LPS
+    }
+
+
+}
+            
+```
+:::
+
+::: Passo 4
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual bate com o caractere em 'comprimento'
+    // Significa que estendemos um prefixo que também é sufixo
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i < m) {
+
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
         
+    }
+
+
+}
+            
+```
+:::
+
+::: Passo 5
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+
+    // Se o caractere atual nao bate com o caractere do comprimento, tentamos com um comprimento menor, até que o comprimento seja 0.
+
+}
+            
+```
+
+::: Tradução para código
+
+``` c
+
+void lps(char padrao[], int m, int* lps){
+                
+    lps[0] = 0;
+
+    i = 1
+    comprimento = 0
+
+    while (i < m) {
+
         if (padrao[i] == padrao[comprimento]) {
             comprimento++;
             lps[i] = comprimento;
             i++;
         }
 
-        // Passo 6: Se os caracteres não combinam
         else {
             if (comprimento != 0) {
-                comprimento = lps[comprimento - 1];
+                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
             } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+        
+    }
+
+
+}
+            
+```
+:::
+
+::: RESUMO
+
+``` c
+
+void lps(char padrao[], int m, int* lps) {
+    // O primeiro caractere nunca tem prefixo próprio → lps[0] = 0
+    lps[0] = 0;
+
+    // comprimento guarda o tamanho do maior prefixo próprio que também é sufixo
+    int comprimento = 0;
+
+    // Começamos a análise a partir do segundo caractere
+    int i = 1;
+
+    while (i < m) {
+        // Caso os caracteres batam: padrao[i] estende o prefixo já conhecido
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;          // aumentamos o comprimento do prefixo/sufixo atual
+            lps[i] = comprimento;   // salvamos esse valor no vetor LPS
+            i++;                    // avançamos no padrão
+        }
+        else {
+            // Se já tínhamos um prefixo parcial, tentamos recuar para um menor
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+                // Note que não avançamos i — vamos tentar casar novamente
+            }
+            else {
+                // Se não há mais prefixo a testar, o valor de lps[i] é 0
                 lps[i] = 0;
                 i++;
             }
         }
     }
 }
-        
+
+            
 ```
 :::
-???
-## Otimizando o KMP
 
-Utilizando o LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. Vamos olhar como fica o código do KMP agora:
+???
+
+
+## O KMP
+
+Como visto anteriormente, por meio do uso do LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. 
+
+Vamos tentar ver isso em prática, agora, comparando os dois usando os mesmos parametros:
+
+:KMP
+
+Como puderam ver, o KMP é muito mais eficiente do que o ingenuo, no exemplo dado, ele completou a análise com quase a metade das iterações utilizadas pelo ingenuo.
+
+Por fim, vamos dar uma olhada em como ficou a versão final do KMP, com o LPS:
 
 ``` c
 
@@ -422,6 +609,3 @@ Agora que estamos usando o lps, o KMP alcança uma complexidade de \(O(n + m)\).
 :::
 ???
 
-Vamos olhar agora para uma animação, demonstrando o funcionamento desta versão do KMP:
-
-:KMP

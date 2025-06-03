@@ -313,6 +313,14 @@ LPS[i] = 0
 :::
 ???
 
+??? Exercício
+
+Agora é com você! Tente acertar o próximo número do vetor LPS. Se necessário, escreva os suxifos e prefixos em um papel.
+
+:LPS_2
+
+???
+
 ## 3. Construindo o algoritmo do vetor LPS
 
 Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
@@ -321,37 +329,6 @@ Agora que entedemos como o algoritmo funciona na prática, vamos montar o códig
 
 ``` c
 
-<<<<<<< HEAD
-## 1. Por que precisamos do LPS?
-
-Ao buscar um padrão dentro de um texto, algoritmos ingênuos comparam tudo de novo sempre que ocorre um erro. Isso gera muitas repetições desnecessárias.
-
-O vetor **LPS (Longest Proper Prefix which is also Suffix)** evita isso: ele indica até onde podemos "reaproveitar" o que já foi casado no padrão, sem voltar no texto. 
-
-Com ele, o algoritmo KMP sabe exatamente onde retomar a busca, tornando tudo mais eficiente.
-
-## 2. Como o LPS é construído?
-
-Para cada posição {red}(i) no padrão, o algoritmo KMP calcula {red}(lps[i]), que representa o comprimento do maior **prefixo próprio** da substring {red}(padrao[0...i]) que também é um **sufixo próprio** dessa mesma substring.
-
-Esse valor indica o quanto do padrão já foi reconhecido e pode ser reaproveitado, caso haja falha durante a busca no texto.
-
-Abaixo, mostramos passo a passo a construção do vetor LPS para o padrão {red}(ABABAC).
-
-??? Importante!
-
-Lembre-se que o prefixo sempre começa da primeira letra e exclui a última, enquanto o sufixo termina na última letra e exclui a primeira.
-
-Exemplo: 
-
-Na palavra INSPER os **prefixos** seriam: I, IN, INS, INSP e INSPE.
-
-Enquanto os **sufixos** seriam: R, ER, PER, SPER, NSPER.
-
-
-
-???
-=======
 void lps(char padrao[], int m, int* lps){
 
     // Restante do código
@@ -359,11 +336,9 @@ void lps(char padrao[], int m, int* lps){
 }
 
 ```
->>>>>>> origin/main
 
 O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
 
-<<<<<<< HEAD
 
 ??? Exercício
 
@@ -427,251 +402,8 @@ LPS[i] = 0
 :::
 ???
 
-## 3. Construindo o algoritmo do vetor LPS
-
-Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
-
-??? Passo 0
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-
-    // Restante do código
-                
-}
-
-```
-
-O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
-
-::: Passo 1
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    // iniciamos definindo lps[0] como 0
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-}
-            
-```
-:::
-
-::: Passo 2
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    // definimos um contador i que vai percorrer o padrao.
-    // também ja podemos definir uma variável para guardarmos o comprimento do prefixo/sufixo igual atual.
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1 // i começa em 1 porque já sabemos o que tem na posição 0.
-    comprimento = 0
-
-
-}
-            
-```
-:::
-
-::: Passo 3
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Percorre o padrão até o final
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1
-    comprimento = 0
-
-    while (i < m) {
-
-    }
-
-
-}
-            
-```
-:::
-
-::: Passo 4
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Se o caractere atual bate com o caractere em 'comprimento'
-    // Significa que estendemos um prefixo que também é sufixo
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1
-    comprimento = 0
-
-    while (i < m) {
-
-        if (padrao[i] == padrao[comprimento]) {
-            comprimento++;
-            lps[i] = comprimento;
-            i++;
-        }
-        
-    }
-
-
-}
-            
-```
-:::
-
-::: Passo 5
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-
-    // Se o caractere atual nao bate com o caractere do comprimento, tentamos com um comprimento menor, até que o comprimento seja 0.
-
-}
-            
-```
-
-::: Tradução para código
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-                
-    lps[0] = 0;
-
-    i = 1
-    comprimento = 0
-
-    while (i < m) {
-
-        if (padrao[i] == padrao[comprimento]) {
-            comprimento++;
-            lps[i] = comprimento;
-            i++;
-        }
-
-        else {
-            if (comprimento != 0) {
-                comprimento = lps[comprimento - 1]; // Podemos usar recursão para tornar o algoritmo mais eficiente.
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-        
-    }
-
-
-}
-            
-```
-:::
-
-::: RESUMO
-
-``` c
-
-void lps(char padrao[], int m, int* lps) {
-    // O primeiro caractere nunca tem prefixo próprio → lps[0] = 0
-    lps[0] = 0;
-
-    // comprimento guarda o tamanho do maior prefixo próprio que também é sufixo
-    int comprimento = 0;
-
-    // Começamos a análise a partir do segundo caractere
-    int i = 1;
-
-    while (i < m) {
-        // Caso os caracteres batam: padrao[i] estende o prefixo já conhecido
-        if (padrao[i] == padrao[comprimento]) {
-            comprimento++;          // aumentamos o comprimento do prefixo/sufixo atual
-            lps[i] = comprimento;   // salvamos esse valor no vetor LPS
-            i++;                    // avançamos no padrão
-        }
-        else {
-            // Se já tínhamos um prefixo parcial, tentamos recuar para um menor
-            if (comprimento != 0) {
-                comprimento = lps[comprimento - 1];
-                // Note que não avançamos i — vamos tentar casar novamente
-            }
-            else {
-                // Se não há mais prefixo a testar, o valor de lps[i] é 0
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-}
-
-            
-```
-:::
-<<<<<<< HEAD
-
-???
-
-
 
 ## Otimizando o KMP
-=======
->>>>>>> origin/main
 
 ???
 
@@ -732,3 +464,146 @@ Agora que estamos usando o lps, o KMP alcança uma complexidade de \(O(n + m)\).
 :::
 ???
 
+## 🧩 Desafios
+
+Os desafios requerem pensar em alto nível a ideia de cada parte do algoritmo, e depois montar seu código em C.
+
+## 🔸 Desafio 1 — Algoritmo Ingênuo de Busca de Padrão
+
+📌 O algoritmo percorre cada posição da string principal e tenta verificar, caractere a caractere, se a substring aparece a partir dali. Se houver mismatch, ele interrompe a verificação e parte para a próxima posição da string.
+
+
+:::Ideia
+
+```c
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    // para cada i em (0, 1, 2, ..., n - m)
+    //     verifica se a substring ocorre a partir da posição i
+    //     para cada j em (0, 1, 2, ..., m - 1)
+    //         se string[i + j] ≠ substring[j]
+    //             interrompe a verificação (não é uma ocorrência)
+    //     se todos os caracteres da substring foram verificados com sucesso
+    //         registra a posição i como ocorrência do padrão
+
+```
+:::
+ 
+
+:::Implementação
+
+```c
+void algoritimo_ingenuo(char string[], char substring[], int n, int m){
+    for (int i = 0; i <= n - m; i++) {
+        for (int j = 0; j < m; j++) {
+            if (string[i + j] != substring[j]){
+                break;
+            }
+            if (j == m - 1) {
+                printf("Padrão encontrado na posição %d\n", i);
+            }
+        }
+    }
+}
+```
+:::
+
+---
+
+## 🔸 Desafio 2 — Construção do Vetor LPS
+
+📌 O vetor LPS armazena, para cada posição i da substring, o tamanho do maior prefixo que também é sufixo da substring até a posição i. Esse vetor é utilizado pelo algoritmo KMP para evitar retrocessos desnecessários na busca.
+
+:::Ideia
+
+```c
+void lps(char padrao[], int m, int* lps){
+    // lps[0] = 0, pois uma letra sozinha não tem prefixo próprio
+    // para i de 1 até m-1:
+    //     se padrao[i] == padrao[comprimento], temos um prefixo/sufixo maior
+    //         atualiza lps[i] com comprimento++
+    //     senão:
+    //         se comprimento ≠ 0, recua para lps[comprimento - 1]
+    //         senão, lps[i] = 0
+}
+```
+:::
+
+:::Implementação
+
+```c
+void lps(char padrao[], int m, int* lps){
+    lps[0] = 0;
+    int comprimento = 0;
+    int i = 1;
+
+    while (i < m) {
+        if (padrao[i] == padrao[comprimento]) {
+            comprimento++;
+            lps[i] = comprimento;
+            i++;
+        }
+        else {
+            if (comprimento != 0) {
+                comprimento = lps[comprimento - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+}
+```
+:::
+
+---
+
+## 🔸 Desafio 3 — Algoritmo KMP com LPS
+
+📌 O algoritmo KMP utiliza o vetor LPS para evitar repetir comparações em caso de falha parcial. Quando há uma incompatibilidade entre a substring e a string principal, ele usa o LPS para "pular" os caracteres já verificados, garantindo eficiência.
+
+:::Ideia
+
+```c
+void kmp(char string[], char substring[], int n, int m){
+    // calcula o vetor lps da substring
+    // usa dois índices: i para string principal, j para substring
+    // se string[i] == substring[j], avança ambos
+    // se j == m, encontrou ocorrência — imprime e reseta j para lps[j - 1]
+    // se string[i] ≠ substring[j]:
+    //     se j ≠ 0, recua j = lps[j - 1]
+    //     senão, avança i
+}
+```
+:::
+
+:::Implementação
+
+```c
+void kmp(char string[], char substring[], int n, int m){
+    int lps[m];
+    lps(substring, m, lps);
+
+    int i = 0;
+    int j = 0;
+
+    while (i < n) {
+        if (string[i] == substring[j]) {
+            i++;
+            j++;
+        }
+
+        if (j == m) {
+            printf("Padrão encontrado na posição %d\n", i - j);
+            j = lps[j - 1];
+        }
+        else if (i < n && string[i] != substring[j]) {
+            if (j != 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+}
+```
+:::

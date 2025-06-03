@@ -445,8 +445,6 @@ void lps(char padrao[], int m, int* lps){
 
 O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
 
-=======
->>>>>>> origin/main
 ::: Passo 1
 
 ``` c

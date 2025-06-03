@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador KMP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        button.secondary {
+            background-color: #f0ad4e;
+        }
+        button.secondary:hover {
+            background-color: #ec971f;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .visualization-area, .results-area, .lps-area {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .lps-table {
+            border-collapse: collapse;
+            margin-top: 10px;
+            width: auto;
+        }
+        .lps-table th, .lps-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            min-width: 30px;
+        }
+        .lps-table th {
+            background-color: #e9ecef;
+        }
+
+        .text-display, .pattern-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2em;
+            white-space: pre;
+            margin-bottom: 10px;
+            overflow-x: auto;
+            padding: 5px;
+            border: 1px solid #eee;
+            background-color: white;
+        }
+        .char {
+            display: inline-block;
+            min-width: 1em;
+            text-align: center;
+            padding: 2px;
+            border-radius: 3px;
+        }
+        .highlight-text-compare {
+            background-color: lightyellow;
+            border: 1px solid #f0ad4e;
+        }
+        .highlight-pattern-compare {
+            background-color: lightcyan;
+            border: 1px solid #5bc0de;
+        }
+        .match {
+            background-color: #a5d6a7 !important;
+            font-weight: bold;
+        }
+        .mismatch {
+            background-color: #ef9a9a !important;
+            font-weight: bold;
+        }
+        .full-match-highlight {
+            background-color: #c8e6c9; /* Verde bem claro para ocorrências completas */
+        }
+
+        #step-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border: 1px solid #cce5ff;
+            border-radius: 4px;
+            min-height: 40px;
+        }
+        #final-results {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .attribution {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .attribution p {
+            margin-bottom: 5px;
+        }
+        .lps-highlight {
+            background-color: #ffe0b2 !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador do Algoritmo KMP</h1>
+
+        <div>
+            <label for="text-input">Texto:</label>
+            <textarea id="text-input" placeholder="Digite o texto aqui...">banana</textarea>
+        </div>
+        <div>
+            <label for="pattern-input">Padrão:</label>
+            <input type="text" id="pattern-input" placeholder="Digite o padrão aqui..." value="ana">
+        </div>
+
+        <button id="run-kmp">Ver Resultado Final</button>
+        <button id="run-kmp-step">Ver Passo a Passo</button>
+        <hr>
+
+        <div class="lps-area" style="display:none;">
+            <h2>Array LPS (Longest Proper Prefix which is also Suffix)</h2>
+            <div id="lps-table-container"></div>
+        </div>
+
+        <div class="visualization-area" style="display:none;">
+            <h2>Visualização Passo a Passo</h2>
+            <div class="text-display" id="text-display-vis"></div>
+            <div class="pattern-display" id="pattern-display-vis"></div>
+            <div id="step-info">Clique em "Próximo Passo" para iniciar.</div>
+            <div>
+                <button id="prev-step" disabled>Passo Anterior</button>
+                <button id="next-step" disabled>Próximo Passo</button>
+                <button id="reset-vis" class="secondary">Resetar Visualização</button>
+            </div>
+        </div>
+
+        <div class="results-area" style="display:none;">
+            <h2>Resultado Final</h2>
+            <div id="final-results"></div>
+        </div>
+
+        <div class="attribution">
+            <p><strong>Fonte e Ferramentas Utilizadas:</strong></p>
+            <p>Este visualizador foi desenvolvido como parte de um trabalho acadêmico. O algoritmo KMP é um conceito clássico da ciência da computação.</p>
+            <p>Para a criação deste código HTML/CSS/JS, foi utilizada assistência da IA Generativa (Gemini da Google) com os seguintes prompts/diretrizes:</p>
+            <ul>
+                <li>"Preciso de ajuda para montar um arquivo HTML único para visualizar o algoritmo KMP."</li>
+                <li>"O usuário deve poder inserir um texto e um padrão."</li>
+                <li>"Deve haver opções para ver o resultado final ou ver o funcionamento passo a passo."</li>
+                <li>"Cada passo deve corresponder a uma comparação ou mudança de estado do algoritmo (ex: avanço de ponteiros, uso do LPS para shift)."</li>
+                <li>"O HTML, CSS e JavaScript devem estar contidos em um único arquivo."</li>
+                <li>"Incluir uma seção de atribuição indicando o uso de IA generativa e os prompts."</li>
+                <li>(E prompts subsequentes para correção de erros e refinamentos visuais)</li>
+                <li>Para ver o prompt, acesse o <a href="https://aistudio.google.com/app/prompts?state=%7B%22ids%22:%5B%221dv1TQ1zu443oSMj5xDBpsZ4pWn3XyhTQ%22%5D,%22action%22:%22open%22,%22userId%22:%22103704695775835581819%22,%22resourceKeys%22:%7B%7D%7D&usp=sharing, https://drive.google.com/file/d/1srYqUr-CFI_Xz9aUu5kRuUC4sRbzV00m/view?usp=sharing">link</a>.</li>
+            </ul>
+            <p>O código resultante foi revisado e adaptado pelo grupo.</p>
+        </div>
+    </div>
+
+    <script>
+        // Elementos DOM
+        const textInput = document.getElementById('text-input');
+        const patternInput = document.getElementById('pattern-input');
+        const runKmpButton = document.getElementById('run-kmp');
+        const runKmpStepButton = document.getElementById('run-kmp-step');
+
+        const lpsArea = document.querySelector('.lps-area');
+        const lpsTableContainer = document.getElementById('lps-table-container');
+
+        const visualizationArea = document.querySelector('.visualization-area');
+        const textDisplayVis = document.getElementById('text-display-vis');
+        const patternDisplayVis = document.getElementById('pattern-display-vis');
+        const stepInfo = document.getElementById('step-info');
+        const prevStepButton = document.getElementById('prev-step');
+        const nextStepButton = document.getElementById('next-step');
+        const resetVisButton = document.getElementById('reset-vis');
+
+        const resultsArea = document.querySelector('.results-area');
+        const finalResults = document.getElementById('final-results');
+
+        // Estado da visualização
+        let currentTextGlobal = '';
+        let currentPatternGlobal = '';
+        let lpsArrayGlobal = [];
+        let kmpSteps = [];
+        let currentStepIndex = -1;
+
+        function computeLPSArray(pattern) {
+            const m = pattern.length;
+            const lps = Array(m).fill(0);
+            let length = 0;
+            let i = 1;
+            while (i < m) {
+                if (pattern[i] === pattern[length]) {
+                    length++;
+                    lps[i] = length;
+                    i++;
+                } else {
+                    if (length !== 0) {
+                        length = lps[length - 1];
+                    } else {
+                        lps[i] = 0;
+                        i++;
+                    }
+                }
+            }
+            return lps;
+        }
+
+        function kmpSearch(text, pattern) {
+            const n = text.length;
+            const m = pattern.length;
+            if (m === 0) return [];
+            if (n === 0 || m > n) return [];
+
+            const lps = computeLPSArray(pattern);
+            const occurrences = [];
+            let i = 0;
+            let j = 0;
+            while (i < n) {
+                if (pattern[j] === text[i]) {
+                    i++;
+                    j++;
+                }
+                if (j === m) {
+                    occurrences.push(i - j);
+                    j = lps[j - 1];
+                } else if (i < n && pattern[j] !== text[i]) {
+                    if (j !== 0) {
+                        j = lps[j - 1];
+                    } else {
+                        i++;
+                    }
+                }
+            }
+            return occurrences;
+        }
+
+        function kmpSearchStepByStep(text, pattern) {
+            const n = text.length;
+            const m = pattern.length;
+            const steps = [];
+            const foundAtIndices = [];
+
+            if (m === 0) {
+                lpsArrayGlobal = [];
+                displayLPSArray(pattern, lpsArrayGlobal);
+                steps.push({
+                    i_txt: 0, j_pat: 0,
+                    action: "Padrão está vazio. Busca não aplicável.",
+                    matchStatus: 'info',
+                    lpsHighlightIndex: -1,
+                    currentFound: []
+                });
+                return steps;
+            }
+
+            lpsArrayGlobal = computeLPSArray(pattern);
+            displayLPSArray(pattern, lpsArrayGlobal);
+
+            if (n === 0 || m > n) {
+                steps.push({
+                    i_txt: 0, j_pat: 0,
+                    action: "Texto vazio ou padrão maior que o texto. Padrão não pode ser encontrado.",
+                    matchStatus: 'info',
+                    lpsHighlightIndex: -1,
+                    currentFound: []
+                });
+                return steps;
+            }
+
+            let i = 0;
+            let j = 0;
+
+            while (i < n) {
+                steps.push({
+                    i_txt: i, j_pat: j,
+                    action: `Comparando Texto[${i}] ('${text[i]}') com Padrão[${j}] ('${pattern[j]}')...`,
+                    matchStatus: 'compare',
+                    lpsHighlightIndex: -1,
+                    currentFound: [...foundAtIndices]
+                });
+
+                if (pattern[j] === text[i]) {
+                    steps.push({
+                        i_txt: i, j_pat: j,
+                        action: `...CORRESPONDE! Avançando ponteiros i (texto) e j (padrão).`,
+                        matchStatus: 'match',
+                        lpsHighlightIndex: -1,
+                        currentFound: [...foundAtIndices]
+                    });
+                    i++;
+                    j++;
+
+                    if (j === m) {
+                        const foundStartIndex = i - j;
+                        foundAtIndices.push(foundStartIndex);
+                        steps.push({
+                            i_txt: i,
+                            j_pat: j,
+                            action: `PADRÃO ENCONTRADO na posição ${foundStartIndex}! Usando LPS[${j-1}] (${lpsArrayGlobal[j-1]}) para shift. Novo j do padrão = ${lpsArrayGlobal[j-1]}.`,
+                            matchStatus: 'found',
+                            lpsHighlightIndex: j-1,
+                            currentFound: [...foundAtIndices] // Importante: passar a lista atualizada
+                        });
+                        j = lpsArrayGlobal[j - 1];
+                    }
+                } else {
+                    let lpsToUseMessage = (j !== 0) ? `Será usado LPS[${j-1}] (${lpsArrayGlobal[j-1]}) para shift.` : "Ponteiro i (texto) será avançado.";
+                    steps.push({
+                        i_txt: i, j_pat: j,
+                        action: `...NÃO CORRESPONDE. ${lpsToUseMessage}`,
+                        matchStatus: 'mismatch',
+                        lpsHighlightIndex: (j !== 0 ? j-1 : -1),
+                        currentFound: [...foundAtIndices]
+                    });
+
+                    if (j !== 0) {
+                        j = lpsArrayGlobal[j - 1];
+                        steps.push({
+                            i_txt: i,
+                            j_pat: j,
+                            action: `Padrão deslocado usando LPS. Novo j do padrão = ${j}. (i do texto = ${i} permanece).`,
+                            matchStatus: 'shift',
+                            lpsHighlightIndex: -1,
+                            currentFound: [...foundAtIndices]
+                        });
+                    } else {
+                        i++;
+                        if (i < n) { // Adiciona step de avanço de i apenas se i ainda estiver dentro do texto
+                             steps.push({
+                                i_txt: i, j_pat: j,
+                                action: `Ponteiro i (texto) avançado para ${i}. (j do padrão = ${j} permanece).`,
+                                matchStatus: 'shift', 
+                                lpsHighlightIndex: -1,
+                                currentFound: [...foundAtIndices]
+                            });
+                        }
+                    }
+                }
+            }
+
+            steps.push({
+                i_txt: i, j_pat: j,
+                action: `Fim da busca. ${foundAtIndices.length > 0 ? `Padrão encontrado ${foundAtIndices.length} vez(es) nos índices: ${foundAtIndices.join(', ')}.` : 'Padrão não encontrado.'}`,
+                matchStatus: 'end',
+                lpsHighlightIndex: -1,
+                currentFound: [...foundAtIndices]
+            });
+            return steps;
+        }
+
+        function displayLPSArray(pattern, lpsArr) {
+            lpsTableContainer.innerHTML = '';
+            if (!pattern || pattern.length === 0) {
+                lpsArea.style.display = 'none';
+                return;
+            }
+            lpsArea.style.display = 'block';
+
+            const table = document.createElement('table');
+            table.className = 'lps-table';
+            const headerRow1 = table.insertRow();
+            headerRow1.insertCell().textContent = 'Índice (j)';
+            const headerRow2 = table.insertRow();
+            headerRow2.insertCell().textContent = 'Padrão P[j]';
+            const dataRow = table.insertRow();
+            dataRow.insertCell().textContent = 'LPS[j]';
+
+            for (let k = 0; k < pattern.length; k++) {
+                const th1 = headerRow1.insertCell();
+                th1.textContent = k;
+                th1.id = `lps-idx-${k}`;
+                const th2 = headerRow2.insertCell();
+                th2.textContent = pattern[k];
+                th2.id = `lps-char-${k}`;
+                const td = dataRow.insertCell();
+                td.textContent = lpsArr[k];
+                td.id = `lps-val-${k}`;
+            }
+            lpsTableContainer.appendChild(table);
+        }
+
+        function renderStep(stepIndex) {
+            if (stepIndex < 0 || !kmpSteps || stepIndex >= kmpSteps.length) {
+                return;
+            }
+
+            const step = kmpSteps[stepIndex];
+            const text = currentTextGlobal;
+            const pattern = currentPatternGlobal;
+
+            document.querySelectorAll('.lps-table td, .lps-table th').forEach(cell => {
+                cell.classList.remove('lps-highlight');
+            });
+            
+            if (typeof pattern === 'undefined' || pattern === null) {
+                stepInfo.textContent = "Erro interno: Padrão não definido para renderização.";
+                return; 
+            }
+             if (typeof text === 'undefined' || text === null) {
+                 textDisplayVis.innerHTML = '<span class="char" style="color:red;">Erro: Texto não definido.</span>';
+                 // Não retorna aqui, pois o padrão pode ainda ser renderizado
+            }
+
+
+            if (step.lpsHighlightIndex !== -1 && pattern.length > 0 && step.lpsHighlightIndex < pattern.length) {
+                document.getElementById(`lps-idx-${step.lpsHighlightIndex}`)?.classList.add('lps-highlight');
+                document.getElementById(`lps-char-${step.lpsHighlightIndex}`)?.classList.add('lps-highlight');
+                document.getElementById(`lps-val-${step.lpsHighlightIndex}`)?.classList.add('lps-highlight');
+            }
+
+            // NOVA LÓGICA PARA RENDERIZAR O TEXTO COM DESTAQUES DE OCORRÊNCIAS COMPLETAS
+            if (text) { // Só tenta renderizar o texto se ele existir
+                let textCharsHighlightInfo = text.split('').map(char => ({ char: char, isFullMatch: false }));
+
+                if (pattern.length > 0) { // Só processa destaques se o padrão existir
+                    const patternLen = pattern.length;
+                    step.currentFound.forEach(startIndex => {
+                        for (let k = 0; k < patternLen; k++) {
+                            if (startIndex + k < text.length) {
+                                textCharsHighlightInfo[startIndex + k].isFullMatch = true;
+                            }
+                        }
+                    });
+                }
+                
+                let textHTML = textCharsHighlightInfo.map(info => {
+                    const charClass = info.isFullMatch ? "char full-match-highlight" : "char";
+                    // Escapar caracteres HTML se necessário, mas para simples letras geralmente não é.
+                    // Ex: info.char.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">")
+                    return `<span class="${charClass}">${info.char}</span>`;
+                }).join('');
+                textDisplayVis.innerHTML = textHTML;
+            } else {
+                textDisplayVis.innerHTML = ""; // Limpa se não há texto
+            }
+
+            // Destaque da comparação ATUAL (amarelo/ciano)
+            const textCharsSpans = textDisplayVis.querySelectorAll('.char'); // Re-seleciona após innerHTML
+            if (step.matchStatus === 'compare' || step.matchStatus === 'match' || step.matchStatus === 'mismatch') {
+                if (step.i_txt < textCharsSpans.length) { // Usa textCharsSpans.length em vez de text.length
+                    textCharsSpans[step.i_txt].classList.add('highlight-text-compare');
+                    if (step.matchStatus === 'match') textCharsSpans[step.i_txt].classList.add('match');
+                    if (step.matchStatus === 'mismatch') textCharsSpans[step.i_txt].classList.add('mismatch');
+                }
+            }
+
+            // Renderiza padrão alinhado
+            let patternHTML = '';
+            if (pattern.length > 0) { // Só renderiza padrão se ele existir
+                const patternOffset = step.i_txt - step.j_pat;
+                for (let k = 0; k < patternOffset; k++) {
+                    patternHTML += `<span class="char"> </span>`;
+                }
+                for (let k = 0; k < pattern.length; k++) {
+                    let pCharClass = 'char';
+                    if ((step.matchStatus === 'compare' || step.matchStatus === 'match' || step.matchStatus === 'mismatch') && k === step.j_pat) {
+                        pCharClass += ' highlight-pattern-compare';
+                        if (step.matchStatus === 'match') pCharClass += ' match';
+                        if (step.matchStatus === 'mismatch') pCharClass += ' mismatch';
+                    }
+                    patternHTML += `<span class="${pCharClass}">${pattern[k]}</span>`;
+                }
+            }
+            patternDisplayVis.innerHTML = patternHTML;
+
+            stepInfo.textContent = step.action;
+
+            prevStepButton.disabled = (stepIndex === 0);
+            nextStepButton.disabled = (stepIndex === kmpSteps.length - 1);
+        }
+
+        function resetAllVisuals() {
+            visualizationArea.style.display = 'none';
+            resultsArea.style.display = 'none';
+            lpsArea.style.display = 'none';
+            textDisplayVis.innerHTML = '';
+            patternDisplayVis.innerHTML = '';
+            stepInfo.textContent = 'Clique em "Próximo Passo" para iniciar.';
+            lpsTableContainer.innerHTML = '';
+            finalResults.innerHTML = '';
+            kmpSteps = [];
+            currentStepIndex = -1;
+            prevStepButton.disabled = true;
+            nextStepButton.disabled = true;
+            document.querySelectorAll('.lps-table td, .lps-table th').forEach(cell => {
+                 cell.classList.remove('lps-highlight');
+            });
+        }
+
+        runKmpButton.addEventListener('click', () => {
+            resetAllVisuals();
+            currentTextGlobal = textInput.value;
+            currentPatternGlobal = patternInput.value;
+
+            if (!currentTextGlobal && currentPatternGlobal === "") {
+                 finalResults.textContent = "Por favor, insira o texto e o padrão.";
+                 resultsArea.style.display = 'block';
+                 lpsArea.style.display = 'none';
+                 return;
+            }
+            if (currentPatternGlobal === "") {
+                finalResults.textContent = "Padrão não pode ser vazio para 'Ver Resultado Final'.";
+                resultsArea.style.display = 'block';
+                lpsArea.style.display = 'none';
+                return;
+            }
+            
+            lpsArrayGlobal = computeLPSArray(currentPatternGlobal);
+            displayLPSArray(currentPatternGlobal, lpsArrayGlobal);
+
+            const occurrences = kmpSearch(currentTextGlobal, currentPatternGlobal);
+            if (occurrences.length > 0) {
+                finalResults.textContent = `Padrão "${currentPatternGlobal}" encontrado nas posições: ${occurrences.join(', ')}.`;
+            } else {
+                finalResults.textContent = `Padrão "${currentPatternGlobal}" não encontrado no texto.`;
+            }
+            resultsArea.style.display = 'block';
+        });
+
+        runKmpStepButton.addEventListener('click', () => {
+            resetAllVisuals();
+            currentTextGlobal = textInput.value;
+            currentPatternGlobal = patternInput.value;
+            
+            kmpSteps = kmpSearchStepByStep(currentTextGlobal, currentPatternGlobal);
+            
+            visualizationArea.style.display = 'block';
+
+            if (kmpSteps && kmpSteps.length > 0) {
+                currentStepIndex = 0;
+                renderStep(currentStepIndex);
+                nextStepButton.disabled = kmpSteps.length <= 1;
+                prevStepButton.disabled = true;
+            } else {
+                stepInfo.textContent = "Nenhum passo gerado ou kmpSteps é inválido.";
+                nextStepButton.disabled = true;
+                prevStepButton.disabled = true;
+            }
+        });
+
+        nextStepButton.addEventListener('click', () => {
+            if (currentStepIndex < kmpSteps.length - 1) {
+                currentStepIndex++;
+                renderStep(currentStepIndex);
+            }
+        });
+
+        prevStepButton.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                renderStep(currentStepIndex);
+            }
+        });
+        
+        resetVisButton.addEventListener('click', () => {
+            resetAllVisuals();
+            textInput.value = "banana";
+            patternInput.value = "ana";
+        });
+    </script>
+</body>
+</html>

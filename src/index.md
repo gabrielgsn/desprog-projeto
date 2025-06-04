@@ -197,7 +197,7 @@ Nessa situação teríamos **38 iterações** do loop interno, isso para um sequ
 Se para uma sequência de poucos caracteres já parece exaustivo, imagine para casos mais complexos, como sequências de DNA, por exemplo! Isso nos leva para o principal 
 problema do algoritimo: sua complexidade no tempo. O que o torna uma alternativa pouco versátil para soluções mais robustas. 
 
-??? Exercício
+??? Exercício Conceitual 5
 
 
 Para concretizar essa linha de pensamento, a partir da descrição em alto nível, qual a complexidade do algoritimo ingênuo? 
@@ -243,7 +243,7 @@ Bom, dessa forma, fica claro que existe um problema de eficiência neste algorit
 Bom, já ficou bem claro que o problema do Ingênuo é que ele demora devido a redundancia de ficar voltando indices quando ocorre um mismatch dentro da mesma string. Foi na busca da solução deste problema que o KMP foi criado, agora, vamos tentar pensar e entender a solução encontrada para este problema. (dica: a resposta é mais simples do que parece)!
 
 
-??? Exercicio
+??? Exercicio conceitual 6
 
 Como podemos fazer o algoritmo não perder progresso?
 
@@ -273,16 +273,43 @@ Lembrando rapidamente o que são prefixos e sufixos:
 
 Por exemplo, a palavra "paragrafo" tem como prefixo "para" e como sufixo "grafo". O KMP utiliza essa relação para otimizar a busca, evitando comparações desnecessárias.
 
+Em alto nível, fica algo como: 
+
+
+``` c
+
+void kmp(char string[], char substring[], int n, int m){
+    Inicializa um mecanismo auxiliar baseado no padrão para guiar os saltos
+
+     Começa a percorrer o texto com dois ponteiros: um para o texto e outro para o padrão
+
+     Enquanto ainda houver texto a ser percorrido
+         Se os caracteres do texto e do padrão coincidirem
+             Avança ambos os ponteiros
+             Se o ponteiro do padrão atingir o final
+                 Registra a posição como ocorrência
+                 Usa o mecanismo auxiliar para ajustar o ponteiro do padrão e continuar a busca
+         Se os caracteres forem diferentes
+             Se já houve algum progresso no padrão
+                 Usa o mecanismo auxiliar para reposicionar o ponteiro do padrão sem voltar no texto
+             Caso contrário
+                 Apenas avança no texto
+}
+            
+```
+
 Para melhor visualizar isso:
 
 :KMP-1
+
+
 
 Dessa forma, fica mais claro como o KMP funciona: ele tenta casar a substring com a string, e quando ocorre uma incompatibilidade, ele não volta para o início da substring. Em vez disso, ele utiliza o conhecimento prévio sobre os prefixos e sufixos para avançar mais rapidamente.
 
 Mas como ele faz isso? A resposta está no vetor LPS (Longest Prefix Suffix), que armazena o comprimento do maior prefixo que também é sufixo para cada posição da substring. Esse vetor é fundamental para otimizar o algoritmo KMP, permitindo que ele avance de forma eficiente sem retroceder desnecessariamente e reduzindo significativamente a sua complexidade.
 
 
-## Como o LPS é construído?
+## O Segredo por trás do KMP: O Vetor LPS
 
 Para cada posição {red}(i) no padrão, o algoritmo KMP calcula {red}(lps[i]), que representa o comprimento do maior **prefixo próprio** da substring {red}(padrao[0...i]) que também é um **sufixo próprio** dessa mesma substring.
 
@@ -290,7 +317,7 @@ Esse valor indica o quanto do padrão já foi reconhecido e pode ser reaproveita
 
 Abaixo, mostramos passo a passo a construção do vetor LPS para o padrão {red}(ABABAC).
 
-??? Importante!
+!!! Importante!
 
 Lembre-se que o prefixo sempre começa da primeira letra e exclui a última, enquanto o sufixo termina na última letra e exclui a primeira.
 
@@ -302,11 +329,11 @@ Enquanto os **sufixos** seriam: R, ER, PER, SPER, NSPER.
 
 
 
-???
+!!!
 
 
 
-??? Exercício
+??? Exemplo da Implementação
 
 Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
 
@@ -368,36 +395,46 @@ LPS[i] = 0
 :::
 ???
 
-??? Exercício
 
-Agora é com você! Tente acertar o próximo número do vetor LPS. Se necessário, escreva os suxifos e prefixos em um papel.
+Agora que você entendeu como atua o LPS, temos que praticar os 2 conceitos principais: A Busca por prefixos que também são sufixos, e a montagem do vetor LPS.
+
+??? Exercício Conceitual 7
+
+Dados as seguintes sequências, identifique os maiores prefixos que também são sufixos, e a quantidade de vezes que eles aparecem: 
+
+1.ABCABCABCABC <br>
+2.XYXYYXYXYXYYXY <br>
+3.ABACABADABACABA <br>
+
+
+::: Gabarito
+
+1.ABCABCABC <br>
+2.XYXYYXY  <br>
+3.ABACABA <br>
+
+
+
+:::
+
+???
+
+??? Exercício Conceitual 8
+
+Agora é com você! Dada sequência **XYXXYZYXYXXYXYZ**, monte o vetor LPS. O Princípio é o mesmo do exemplo acima!
+
+::: Gabarito
 
 :LPS_2
 
+:::
+
 ???
 
-## 3. Construindo o algoritmo do vetor LPS
 
-Agora que entedemos como o algoritmo funciona na prática, vamos montar o código em C. Tente pensar em qual é o próximo passo para construir o algoritmo, não em código, mas efetivamente o que o algoritmo irá fazer. Volte para o exercicío anterior sempre que precisar. Depois que fizer isso, pense na tradução em código.
+??? Exercício Conceitual 9
 
-??? Passo 0
-
-``` c
-
-void lps(char padrao[], int m, int* lps){
-
-    // Restante do código
-                
-}
-
-```
-
-O algoritmo recebe o padrão, o tamanho do padrao e o vetor LPS, o qual vamos modificar na função.
-
-
-??? Exercício
-
-Vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
+Como a prática nunca é demais, vamos montar o vetor LPS de um texto na prática agora. Tente acertar qual será o maior sufixo que também é prefixo da substring, isto é, {red}(padrão[0...i]), depois complete o vetor com o tamanho deste elemento.
 
 ![](LPS/LPS_0.png)
 
@@ -458,30 +495,17 @@ LPS[i] = 0
 ???
 
 
-## Otimizando o KMP
-
-???
+## O Algoritimo completo de Busca: Entenda o KMP com o LPS
 
 
-## O KMP
+Dessa forma, temos toda a construção em alto nível feita, o código é dado por: 
 
-Como visto anteriormente, por meio do uso do LPS como uma função auxiliar para o KMP, podemos otimizar ele muito, de maneira a reduzir a redundância ao extremo. 
-
-Vamos tentar ver isso em prática, agora, comparando os dois usando os mesmos parametros:
-
-:KMP
-
-Como puderam ver, o KMP é muito mais eficiente do que o ingenuo, no exemplo dado, ele completou a análise com quase a metade das iterações utilizadas pelo ingenuo.
-
-Por fim, vamos dar uma olhada em como ficou a versão final do KMP, com o LPS:
-
-``` c
-
-void kmp(char string[], char substring[], int n, int m) {
+```c
+void kmp(char string[], char substring[], int n, int m){
     int lps[m];
     lps(substring, m, lps);
 
-    int i = 0; 
+    int i = 0;
     int j = 0;
 
     while (i < n) {
@@ -489,10 +513,12 @@ void kmp(char string[], char substring[], int n, int m) {
             i++;
             j++;
         }
+
         if (j == m) {
             printf("Padrão encontrado na posição %d\n", i - j);
-            j = lps[j - 1]; 
-        } else if (i < n && string[i] != substring[j]) {
+            j = lps[j - 1];
+        }
+        else if (i < n && string[i] != substring[j]) {
             if (j != 0) {
                 j = lps[j - 1];
             } else {
@@ -501,8 +527,61 @@ void kmp(char string[], char substring[], int n, int m) {
         }
     }
 }
-        
+
+
 ```
+
+
+Logo, vamos praticar a partir dele, para garantir a fixação dele como um todo 
+
+
+??? Exercício Conceitual 10
+
+
+A Partir da sequência **ABXABXAB**, identifique: <br>
+- O Vetor LPS inteiro 
+- Os valores de **i** e **j**
+Em todas iterações do Loop
+
+
+
+::: Gabarito
+
+**Passo 1: Vetor LPS**
+
+```
+0 1 2 0 1 2 0 0 
+```
+**Passo 2:Determinação de i e j nas iterações**
+
+```
+1: 0 0
+2: 1 1 
+3: 2 2 
+4: 3 0
+5: 3 0
+6: 4 1 
+7: 5 2 
+8: 6 0
+9: 6 0 
+10: 7 1
+11: 8 0
+
+```
+
+:::
+???
+
+
+Por fim, vamos comparar o KMP com o Algoritimo ingênuo, para sintetizar todo esse raciocínio:
+
+:KMP
+
+Como puderam ver, o KMP é muito mais eficiente do que o ingenuo, no exemplo dado, ele completou a análise com quase a metade das iterações utilizadas pelo ingenuo.
+
+
+
+
 
 
 ??? Exercício

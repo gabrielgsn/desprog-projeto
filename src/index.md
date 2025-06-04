@@ -86,7 +86,7 @@ Antes de inicarmos a construção do loop do código, precisamos exercitar o nos
 ::: Gabarito
 
 **Resposta 1:** AAABBB<br> 
-**Resposta 2:** AAABBB<br>
+**Resposta 2:** ABBA<br>
 **Resposta 3:** XYYY<br>
 
 :::
@@ -598,13 +598,13 @@ Agora que estamos usando o lps, o KMP alcança uma complexidade de \(O(n + m)\).
 :::
 ???
 
-## 🧩 Desafios
+## Desafios
 
 Os desafios requerem pensar em alto nível a ideia de cada parte do algoritmo, e depois montar seu código em C.
 
-## 🔸 Desafio 1 — Algoritmo Ingênuo de Busca de Padrão
+## Desafio 1 — Algoritmo Ingênuo de Busca de Padrão
 
-📌 O algoritmo percorre cada posição da string principal e tenta verificar, caractere a caractere, se a substring aparece a partir dali. Se houver mismatch, ele interrompe a verificação e parte para a próxima posição da string.
+O algoritmo percorre cada posição da string principal e tenta verificar, caractere a caractere, se a substring aparece a partir dali. Se houver mismatch, ele interrompe a verificação e parte para a próxima posição da string.
 
 
 :::Ideia
@@ -643,9 +643,9 @@ void algoritimo_ingenuo(char string[], char substring[], int n, int m){
 
 ---
 
-## 🔸 Desafio 2 — Construção do Vetor LPS
+## Desafio 2 — Construção do Vetor LPS
 
-📌 O vetor LPS armazena, para cada posição i da substring, o tamanho do maior prefixo que também é sufixo da substring até a posição i. Esse vetor é utilizado pelo algoritmo KMP para evitar retrocessos desnecessários na busca.
+O vetor LPS armazena, para cada posição i da substring, o tamanho do maior prefixo que também é sufixo da substring até a posição i. Esse vetor é utilizado pelo algoritmo KMP para evitar retrocessos desnecessários na busca.
 
 :::Ideia
 
@@ -691,9 +691,9 @@ void lps(char padrao[], int m, int* lps){
 
 ---
 
-## 🔸 Desafio 3 — Algoritmo KMP com LPS
+## Desafio 3 — Algoritmo KMP com LPS
 
-📌 O algoritmo KMP utiliza o vetor LPS para evitar repetir comparações em caso de falha parcial. Quando há uma incompatibilidade entre a substring e a string principal, ele usa o LPS para "pular" os caracteres já verificados, garantindo eficiência.
+O algoritmo KMP utiliza o vetor LPS para evitar repetir comparações em caso de falha parcial. Quando há uma incompatibilidade entre a substring e a string principal, ele usa o LPS para "pular" os caracteres já verificados, garantindo eficiência.
 
 :::Ideia
 
@@ -741,3 +741,8 @@ void kmp(char string[], char substring[], int n, int m){
 }
 ```
 :::
+
+## Simulador
+
+Para simular o código do KMP com seus próprios inputs, acesse o [link](implementacao.html).
+
